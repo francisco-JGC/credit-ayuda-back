@@ -67,3 +67,23 @@ export const getClientById = async (
     return handleError(error.message)
   }
 }
+
+export const deleteClientById = async (
+  id: number
+): Promise<IHandleResponseController<Client>> => {
+  try {
+    const client = await AppDataSource.getRepository(Client).findOne({
+      where: { id }
+    })
+
+    if (!client) {
+      return handleNotFound('Proveedor no encontrado')
+    }
+
+    return handleSuccess(
+      await AppDataSource.getRepository(Client).remove(client)
+    )
+  } catch (error: any) {
+    return handleError(error.message)
+  }
+}
