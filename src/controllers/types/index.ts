@@ -42,3 +42,11 @@ export interface IPagination {
   page: number
   limit: number
 }
+
+export interface IPaginationResponse<T = unknown> {
+  page: number
+  limit: number
+  data?: T
+  total_data: number
+  total_page: number
+}
