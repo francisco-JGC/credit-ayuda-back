@@ -3,12 +3,15 @@ import {
   handleError,
   handleNotFound,
   handleSuccess,
+  IPagination,
+  IPaginationResponse,
   type IHandleResponseController
 } from './types'
 import { ICreateClient } from '../entities/client/types'
 import { Client } from '../entities/client/client.entity'
 import { getRouteByName } from './route.controller'
 import { Route } from '../entities/route/route.entity'
+import { ILike } from 'typeorm'
 
 export const createClient = async (
   client: ICreateClient
@@ -146,6 +149,40 @@ export const assignRouteToClient = async ({
     await AppDataSource.getRepository(Client).save(client)
 
     return handleSuccess(client)
+  } catch (error: any) {
+    return handleError(error.message)
+  }
+}
+
+export const getPaginationClient = async ({
+  filter,
+  page,
+  limit
+}: IPagination): Promise<
+  IHandleResponseController<IPaginationResponse<Client[]>>
+> => {
+  try {
+    if (isNaN(page) || isNaN(limit)) {
+      return handleNotFound('Numero de pagina o limite son valores invalidos')
+    }
+
+    const users = await AppDataSource.getRepository(Client).find({
+      where: { dni: ILike(`%${filter ? filter : ''}%`) },
+      relations: ['route'],
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { created_at: 'DESC' }
+    })
+
+    const total_data = (await AppDataSource.getRepository(Client).find()).length
+
+    return handleSuccess({
+      data: users,
+      total_data,
+      total_page: Math.ceil(total_data / limit),
+      page,
+      limit
+    })
   } catch (error: any) {
     return handleError(error.message)
   }
