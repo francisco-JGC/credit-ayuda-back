@@ -6,6 +6,7 @@ import {
   type IHandleResponseController
 } from './types'
 import { Route } from '../entities/route/route.entity'
+import { ICreateRoute } from '../entities/route/types'
 
 export const createRoute = async (
   route: ICreateRoute
