@@ -49,3 +49,15 @@ export const getRouteByName = async (
     return handleError(error.message)
   }
 }
+
+export const getAllRoutes = async (): Promise<
+  IHandleResponseController<Route[]>
+> => {
+  try {
+    const routes = await AppDataSource.getRepository(Route).find()
+
+    return handleSuccess(routes)
+  } catch (error: any) {
+    return handleError(error.message)
+  }
+}
