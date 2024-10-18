@@ -9,15 +9,15 @@ export const isAuth = async (
   const authorizationHeader = req.header('Authorization') || ''
 
   if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
-    res.json({ success: false, message: 'Autorización requerida' })
+    return res.json({ success: false, message: 'Autorización requerida' })
   }
 
   const token = authorizationHeader.replace('Bearer ', '')
 
   if (!token) {
-    res.json({ success: false, message: 'No estas autorizado' })
+    return res.json({ success: false, message: 'No estas autorizado' })
   }
 
   if (verify(token, process.env.JWT_SECRET as string)) next()
-  else res.json({ success: false })
+  else return res.json({ success: false })
 }
