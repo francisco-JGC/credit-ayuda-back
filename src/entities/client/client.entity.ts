@@ -3,10 +3,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  ManyToOne
+  ManyToOne,
+  OneToMany
 } from 'typeorm'
-
 import { Route } from '../route/route.entity'
+import { Loan } from '../loan/loan.entity'
 
 @Entity('client')
 export class Client {
@@ -39,4 +40,7 @@ export class Client {
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date
+
+  @OneToMany(() => Loan, (loan) => loan.client)
+  loans: Loan[]
 }
