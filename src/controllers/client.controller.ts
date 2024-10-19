@@ -62,7 +62,7 @@ export const getClientById = async (
     })
 
     if (!client) {
-      return handleNotFound('Usuario no encontrado')
+      return handleNotFound('Cliente no encontrado')
     }
 
     return handleSuccess(client)
@@ -198,7 +198,7 @@ export const getClientByDni = async (
     })
 
     if (!client) {
-      return handleNotFound('Usuario no encontrado')
+      return handleNotFound('Cliente no encontrado')
     }
 
     return handleSuccess({ ...client, route_name: client.route.name })
