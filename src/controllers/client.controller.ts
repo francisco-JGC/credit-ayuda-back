@@ -187,3 +187,22 @@ export const getPaginationClient = async ({
     return handleError(error.message)
   }
 }
+
+export const getClientByDni = async (
+  dni: string
+): Promise<IHandleResponseController<ICreateClient>> => {
+  try {
+    const client = await AppDataSource.getRepository(Client).findOne({
+      where: { dni },
+      relations: ['route']
+    })
+
+    if (!client) {
+      return handleNotFound('Usuario no encontrado')
+    }
+
+    return handleSuccess({ ...client, route_name: client.route.name })
+  } catch (error: any) {
+    return handleError(error.message)
+  }
+}

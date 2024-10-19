@@ -4,6 +4,7 @@ import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
 import {
   createClient,
   deleteClientById,
+  getClientByDni,
   getClientById,
   getPaginationClient,
   updateClientById
@@ -19,6 +20,22 @@ router.post(
     return res.json(await createClient(req.body))
   }
 )
+
+router.post('/delete', async (req, res) => {
+  res.json(await deleteClientById(req.body.id))
+})
+
+router.post('/update/:id', async (req, res) => {
+  res.json(await updateClientById(req.body, Number(req.params.id)))
+})
+
+router.get('/:id', async (req, res) => {
+  res.json(await getClientById(Number(req.params.id)))
+})
+
+router.get('/dni/:dni', async (req, res) => {
+  res.json(await getClientByDni(req.params.dni))
+})
 
 router.get(
   '/:page/:limit/:filter?',
@@ -39,17 +56,4 @@ router.get(
     )
   }
 )
-
-router.post('/delete', async (req, res) => {
-  res.json(await deleteClientById(req.body.id))
-})
-
-router.post('/update/:id', async (req, res) => {
-  res.json(await updateClientById(req.body, Number(req.params.id)))
-})
-
-router.get('/:id', async (req, res) => {
-  res.json(await getClientById(Number(req.params.id)))
-})
-
 export default router
