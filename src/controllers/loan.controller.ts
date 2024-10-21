@@ -40,7 +40,7 @@ export const createLoan = async (
 
     const newLoan = loanRepo.create({
       amount: loan_info.amount,
-      loan_date: loan_info.load_date,
+      loan_date: loan_info.loan_date,
       interest_rate: loan_info.interest_rate,
       status: 'pending',
       total_recovered: loan_info.total_recovered
@@ -83,7 +83,7 @@ export const createPaymentSchedule = async (
       return handleNotFound('Plan de pago no encontrado')
     }
 
-    const load_date = paymentPlan.loan.loan_date
+    const loan_date = paymentPlan.loan.loan_date
     const schedules: PaymentSchedule[] = []
 
     const loan_amount = paymentPlan.loan.amount
@@ -109,19 +109,19 @@ export const createPaymentSchedule = async (
 
       switch (frequency) {
         case 'daily':
-          nextDueDate = addDays(load_date, i)
+          nextDueDate = addDays(loan_date, i)
           break
         case 'weekly':
-          nextDueDate = addDays(load_date, i * 7)
+          nextDueDate = addDays(loan_date, i * 7)
           break
         case 'biweekly':
-          nextDueDate = addDays(load_date, i * 14)
+          nextDueDate = addDays(loan_date, i * 14)
           break
         case 'monthly':
-          nextDueDate = addMonths(load_date, i)
+          nextDueDate = addMonths(loan_date, i)
           break
         case 'yearly':
-          nextDueDate = addMonths(load_date, i * 12)
+          nextDueDate = addMonths(loan_date, i * 12)
           break
         default:
           return handleNotFound('Frecuencia no válida')
