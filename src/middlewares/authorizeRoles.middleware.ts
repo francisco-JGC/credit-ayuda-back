@@ -10,17 +10,13 @@ export const authorizeRoles = (allowedRoles: string[]) => {
     const authorizationHeader = req.header('Authorization') || ''
 
     if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
-      return res
-        .status(401)
-        .json({ success: false, message: 'Autorización requerida' })
+      return res.json({ success: false, message: 'Autorización requerida' })
     }
 
     const token = authorizationHeader.replace('Bearer ', '')
 
     if (!token) {
-      return res
-        .status(401)
-        .json({ success: false, message: 'No estás autorizado' })
+      return res.json({ success: false, message: 'No estás autorizado' })
     }
 
     try {
@@ -31,15 +27,13 @@ export const authorizeRoles = (allowedRoles: string[]) => {
       if (allowedRoles.includes(decoded.role)) {
         return next()
       } else {
-        return res.status(403).json({
+        return res.json({
           success: false,
           message: 'No tienes los permisos necesarios'
         })
       }
     } catch (error) {
-      return res
-        .status(401)
-        .json({ success: false, message: 'Token inválido o expirado' })
+      return res.json({ success: false, message: 'Token inválido o expirado' })
     }
   }
 }
