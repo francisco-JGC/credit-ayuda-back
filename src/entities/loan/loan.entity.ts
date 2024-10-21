@@ -25,6 +25,9 @@ export class Loan {
   @Column({ type: 'decimal', precision: 5, scale: 2 })
   interest_rate: number
 
+  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  total_recovered: number
+
   @Column({ type: 'varchar', length: 50 })
   status: 'active' | 'paid' | 'pending'
 

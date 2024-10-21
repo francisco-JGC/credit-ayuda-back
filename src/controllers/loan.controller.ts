@@ -42,7 +42,8 @@ export const createLoan = async (
       amount: loan_info.amount,
       loan_date: loan_info.load_date,
       interest_rate: loan_info.interest_rate,
-      status: 'pending'
+      status: 'pending',
+      total_recovered: loan_info.total_recovered
     })
 
     const createdLoan = await loanRepo.save(newLoan)
