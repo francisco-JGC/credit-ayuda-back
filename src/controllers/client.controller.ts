@@ -166,9 +166,16 @@ export const getPaginationClient = async ({
       return handleNotFound('Numero de pagina o limite son valores invalidos')
     }
 
-    const users = await AppDataSource.getRepository(Client).find({
+    const clients = await AppDataSource.getRepository(Client).find({
       where: { dni: ILike(`%${filter ? filter : ''}%`) },
-      relations: ['route'],
+      relations: [
+        'route',
+        'loans',
+        'loans.payment_plan',
+        'loans.payment_plan.payment_schedules',
+        'loans.penalty_plans',
+        'loans.penalty_plans.penalty_payment_schedules'
+      ],
       skip: (page - 1) * limit,
       take: limit,
       order: { created_at: 'DESC' }
@@ -177,7 +184,7 @@ export const getPaginationClient = async ({
     const total_data = (await AppDataSource.getRepository(Client).find()).length
 
     return handleSuccess({
-      data: users,
+      data: clients,
       total_data,
       total_page: Math.ceil(total_data / limit),
       page,
