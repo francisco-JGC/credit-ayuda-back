@@ -22,7 +22,7 @@ export class PaymentPlan {
   @Column({ type: 'varchar', length: 50 })
   frequency: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly'
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal' })
   payment_amount: number
 
   @OneToOne(() => Loan, (loan) => loan.payment_plan)

@@ -16,16 +16,16 @@ export class Loan {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', scale: 2 })
   amount: number
 
   @Column({ type: 'date' })
   loan_date: Date
 
-  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  @Column({ type: 'decimal', scale: 2 })
   interest_rate: number
 
-  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  @Column({ type: 'decimal', scale: 2 })
   total_recovered: number
 
   @Column({ type: 'varchar', length: 50 })

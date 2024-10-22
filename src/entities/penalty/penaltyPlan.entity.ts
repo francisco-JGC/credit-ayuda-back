@@ -13,7 +13,7 @@ export class PenaltyPlan {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal' })
   total_penalty_amount: number
 
   @Column({ type: 'varchar', length: 50 })
