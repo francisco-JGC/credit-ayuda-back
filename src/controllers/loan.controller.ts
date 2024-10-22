@@ -60,6 +60,8 @@ export const createLoan = async (
       await manager.save(client)
     })
 
+    await createPaymentSchedule(client.id, createdLoan.id)
+
     return handleSuccess(createdLoan)
   } catch (error: any) {
     return handleError(error.message)
@@ -67,64 +69,88 @@ export const createLoan = async (
 }
 
 export const createPaymentSchedule = async (
-  paymentPlanId: number
+  clientId: number,
+  loanId: number
 ): Promise<IHandleResponseController<PaymentPlan>> => {
   try {
-    const paymentPlanRepo = AppDataSource.getRepository(PaymentPlan)
+    const clientRepo = AppDataSource.getRepository(Client)
 
-    let paymentPlan: PaymentPlan | null
-
-    paymentPlan = await paymentPlanRepo.findOne({
-      where: { id: paymentPlanId },
-      relations: ['payment_schedules', 'loan']
+    const client = await clientRepo.findOne({
+      where: { id: clientId },
+      relations: [
+        'loans',
+        'loans.payment_plan',
+        'loans.payment_plan.payment_schedules'
+      ]
     })
 
-    if (!paymentPlan) {
-      return handleNotFound('Plan de pago no encontrado')
+    if (!client) {
+      return handleNotFound('Cliente no encontrado')
+    }
+    const loan = client.loans.find((loan) => loan.id === loanId)
+
+    if (!loan) {
+      return handleNotFound('Prestamo no encontrado')
     }
 
-    const loan_date = paymentPlan.loan.loan_date
+    const { payment_plan: paymentPlan } = loan
+    const loan_date = loan.loan_date
     const schedules: PaymentSchedule[] = []
 
-    const total_recovered = paymentPlan.loan.total_recovered
+    const total_recovered = loan.total_recovered
     const total_payments = paymentPlan.total_payments
     const frequency = paymentPlan.frequency
 
     const amount_due_per_term = Math.floor(total_recovered / total_payments)
-
     const totalCalculated = amount_due_per_term * total_payments
     const remainder = total_recovered - totalCalculated
 
-    const addDays = (date: Date, days: number): Date => {
-      const newDate = new Date(date)
-      newDate.setDate(newDate.getDate() + days)
+    const addDaysSkippingWeekends = (date: Date, days: number): Date => {
+      let newDate = new Date(date)
+      let addedDays = 0
+
+      while (addedDays < days) {
+        newDate.setDate(newDate.getDate() + 1)
+        if (!isWeekend(newDate)) {
+          addedDays++
+        }
+      }
       return newDate
     }
 
-    const addMonths = (date: Date, months: number): Date => {
+    const addMonthsSkippingWeekends = (date: Date, months: number): Date => {
       const newDate = new Date(date)
       newDate.setMonth(newDate.getMonth() + months)
+
+      while (isWeekend(newDate)) {
+        newDate.setDate(newDate.getDate() + 1)
+      }
       return newDate
     }
 
-    for (let i = 0; i < total_payments; i++) {
+    const isWeekend = (date: Date): boolean => {
+      const day = date.getDay()
+      return day === 6 || day === 0
+    }
+
+    for (let i = 1; i < total_payments; i++) {
       let nextDueDate: Date
 
       switch (frequency) {
         case 'daily':
-          nextDueDate = addDays(new Date(loan_date), i)
+          nextDueDate = addDaysSkippingWeekends(new Date(loan_date), i)
           break
         case 'weekly':
-          nextDueDate = addDays(new Date(loan_date), i * 7)
+          nextDueDate = addDaysSkippingWeekends(new Date(loan_date), i * 7)
           break
         case 'biweekly':
-          nextDueDate = addDays(new Date(loan_date), i * 14)
+          nextDueDate = addDaysSkippingWeekends(new Date(loan_date), i * 14)
           break
         case 'monthly':
-          nextDueDate = addMonths(new Date(loan_date), i)
+          nextDueDate = addMonthsSkippingWeekends(new Date(loan_date), i)
           break
         case 'yearly':
-          nextDueDate = addMonths(new Date(loan_date), i * 12)
+          nextDueDate = addMonthsSkippingWeekends(new Date(loan_date), i * 12)
           break
         default:
           return handleNotFound('Frecuencia no válida')
@@ -144,8 +170,11 @@ export const createPaymentSchedule = async (
     }
 
     paymentPlan.payment_schedules = schedules
+    paymentPlan.payment_amount = schedules[0].amount_due
 
-    await paymentPlanRepo.save(paymentPlan)
+    await AppDataSource.transaction(async (manager: EntityManager) => {
+      await manager.save(paymentPlan)
+    })
 
     return handleSuccess(paymentPlan)
   } catch (error) {
