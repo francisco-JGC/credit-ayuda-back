@@ -30,8 +30,8 @@ export const createLoan = async (
     }
 
     const newPaymentPlan = paymentPlanRepo.create({
-      total_payments: loan_info.total_payments,
-      payments_remaining: loan_info.total_payments,
+      total_payments: Number(loan_info.total_payments),
+      payments_remaining: Number(loan_info.total_payments),
       frequency: loan_info.frequency,
       payment_amount: loan_info.payment_amount
     })
@@ -39,9 +39,9 @@ export const createLoan = async (
     const createdPaymentPlan = await paymentPlanRepo.save(newPaymentPlan)
 
     const newLoan = loanRepo.create({
-      amount: loan_info.amount,
+      amount: Number(loan_info.amount),
       loan_date: loan_info.loan_date,
-      interest_rate: loan_info.interest_rate,
+      interest_rate: Number(loan_info.interest_rate),
       status: 'pending',
       total_recovered: loan_info.total_recovered
     })
@@ -86,11 +86,14 @@ export const createPaymentSchedule = async (
     const loan_date = paymentPlan.loan.loan_date
     const schedules: PaymentSchedule[] = []
 
-    const loan_amount = paymentPlan.loan.amount
+    const total_recovered = paymentPlan.loan.total_recovered
     const total_payments = paymentPlan.total_payments
     const frequency = paymentPlan.frequency
 
-    const amount_due_per_term = loan_amount / total_payments
+    const amount_due_per_term = Math.floor(total_recovered / total_payments)
+
+    const totalCalculated = amount_due_per_term * total_payments
+    const remainder = total_recovered - totalCalculated
 
     const addDays = (date: Date, days: number): Date => {
       const newDate = new Date(date)
@@ -109,19 +112,19 @@ export const createPaymentSchedule = async (
 
       switch (frequency) {
         case 'daily':
-          nextDueDate = addDays(loan_date, i)
+          nextDueDate = addDays(new Date(loan_date), i)
           break
         case 'weekly':
-          nextDueDate = addDays(loan_date, i * 7)
+          nextDueDate = addDays(new Date(loan_date), i * 7)
           break
         case 'biweekly':
-          nextDueDate = addDays(loan_date, i * 14)
+          nextDueDate = addDays(new Date(loan_date), i * 14)
           break
         case 'monthly':
-          nextDueDate = addMonths(loan_date, i)
+          nextDueDate = addMonths(new Date(loan_date), i)
           break
         case 'yearly':
-          nextDueDate = addMonths(loan_date, i * 12)
+          nextDueDate = addMonths(new Date(loan_date), i * 12)
           break
         default:
           return handleNotFound('Frecuencia no válida')
@@ -129,7 +132,10 @@ export const createPaymentSchedule = async (
 
       const paymentSchedule = new PaymentSchedule()
       paymentSchedule.due_date = nextDueDate
-      paymentSchedule.amount_due = amount_due_per_term
+      paymentSchedule.amount_due =
+        i === total_payments - 1
+          ? amount_due_per_term + remainder
+          : amount_due_per_term
       paymentSchedule.amount_paid = 0
       paymentSchedule.status = 'pending'
       paymentSchedule.payment_plan = paymentPlan
