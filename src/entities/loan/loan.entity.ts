@@ -28,8 +28,11 @@ export class Loan {
   @Column({ type: 'decimal', scale: 2 })
   total_recovered: number
 
+  @Column({ type: 'decimal', scale: 2, default: 0 })
+  total_pending: number
+
   @Column({ type: 'varchar', length: 50 })
-  status: 'active' | 'paid' | 'pending'
+  status: 'approved' | 'paid' | 'pending'
 
   @OneToOne(() => PaymentPlan, { cascade: true })
   @JoinColumn()
