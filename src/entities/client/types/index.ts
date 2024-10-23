@@ -8,3 +8,13 @@ export interface ICreateClient {
   business_type: string
   route_name: string
 }
+
+export interface IClientTable {
+  id: number
+  name: string
+  phone: string
+  address: string
+  current_debt: number
+  route: string
+  loan_status: 'approved' | 'pending' | 'paid'
+}
