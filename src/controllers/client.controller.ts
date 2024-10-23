@@ -7,7 +7,7 @@ import {
   IPaginationResponse,
   type IHandleResponseController
 } from './types'
-import { ICreateClient } from '../entities/client/types'
+import { IClientTable, ICreateClient } from '../entities/client/types'
 import { Client } from '../entities/client/client.entity'
 import { getRouteByName } from './route.controller'
 import { Route } from '../entities/route/route.entity'
@@ -159,7 +159,7 @@ export const getPaginationClient = async ({
   page,
   limit
 }: IPagination): Promise<
-  IHandleResponseController<IPaginationResponse<Client[]>>
+  IHandleResponseController<IPaginationResponse<IClientTable[]>>
 > => {
   try {
     if (isNaN(page) || isNaN(limit)) {
@@ -181,10 +181,23 @@ export const getPaginationClient = async ({
       order: { created_at: 'DESC' }
     })
 
+    const clientTables: IClientTable[] = clients.map((client) => {
+      return {
+        id: client.id,
+        name: client.name,
+        phone: client.primary_phone,
+        address: client.primary_address,
+        current_debt:
+          client?.loans?.[client?.loans?.length - 1]?.total_pending || 0,
+        route: client.route.name,
+        loan_status: client?.loans?.[client?.loans?.length - 1]?.status || ''
+      }
+    })
+
     const total_data = (await AppDataSource.getRepository(Client).find()).length
 
     return handleSuccess({
-      data: clients,
+      data: clientTables,
       total_data,
       total_page: Math.ceil(total_data / limit),
       page,
