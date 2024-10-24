@@ -1,7 +1,11 @@
 import { Router } from 'express'
 import { isAuth } from '../middlewares/isAuth.middleware'
 import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
-import { createRoute, getAllRoutes } from '../controllers/route.controller'
+import {
+  createRoute,
+  getAllRoutes,
+  getPaginationRoutes
+} from '../controllers/route.controller'
 
 const router = Router()
 
@@ -20,6 +24,26 @@ router.get(
   authorizeRoles(['admin', 'inventory']),
   async (_req, res) => {
     return res.json(await getAllRoutes())
+  }
+)
+
+router.get(
+  '/:page/:limit/:filter?',
+  isAuth,
+  authorizeRoles(['admin']),
+  async (req, res) => {
+    const { page, limit, filter } = req.params
+
+    const pageNumber = parseInt(page, 10)
+    const limitNumber = parseInt(limit, 10)
+
+    return res.json(
+      await getPaginationRoutes({
+        page: pageNumber,
+        limit: limitNumber,
+        filter
+      })
+    )
   }
 )
 
