@@ -16,5 +16,5 @@ export interface IClientTable {
   address: string
   current_debt: number
   route: string
-  loan_status: 'approved' | 'pending' | 'paid'
+  loan_status: 'active' | 'pending' | 'paid'
 }

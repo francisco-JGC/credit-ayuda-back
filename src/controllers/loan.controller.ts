@@ -4,11 +4,13 @@ import { Client } from '../entities/client/client.entity'
 import { Loan } from '../entities/loan/loan.entity'
 import { PaymentPlan } from '../entities/loan/paymentPlan.entity'
 import { PaymentSchedule } from '../entities/loan/paymentSchedule.entity'
-import { ICreateLoan } from '../entities/loan/types/loan'
+import { ICreateLoan, ILoanTable } from '../entities/loan/types/loan'
 import {
   handleError,
   handleNotFound,
   handleSuccess,
+  IPagination,
+  IPaginationResponse,
   type IHandleResponseController
 } from './types'
 
@@ -181,5 +183,67 @@ export const createPaymentSchedule = async (
   } catch (error) {
     console.error('Error al crear el plan de pago:', error)
     return handleError('No se pudo crear el plan de pago')
+  }
+}
+
+export const getPaginationLoans = async ({
+  filter,
+  page,
+  limit
+}: IPagination): Promise<
+  IHandleResponseController<IPaginationResponse<ILoanTable[]>>
+> => {
+  try {
+    if (isNaN(page) || isNaN(limit)) {
+      return handleNotFound('Número de página o límite son valores inválidos')
+    }
+
+    const clientRepository = AppDataSource.getRepository(Client)
+
+    // Usamos QueryBuilder para asegurarnos de que solo obtenemos clientes con préstamos
+    const [clients, total_data] = await clientRepository
+      .createQueryBuilder('client')
+      .leftJoinAndSelect('client.route', 'route')
+      .leftJoinAndSelect('client.loans', 'loans')
+      .leftJoinAndSelect('loans.payment_plan', 'payment_plan')
+      .leftJoinAndSelect('payment_plan.payment_schedules', 'payment_schedules')
+      .leftJoinAndSelect('loans.penalty_plans', 'penalty_plans')
+      .leftJoinAndSelect(
+        'penalty_plans.penalty_payment_schedules',
+        'penalty_payment_schedules'
+      )
+      .where('client.dni ILIKE :filter', {
+        filter: `%${filter ? filter : ''}%`
+      })
+      .andWhere('loans.id IS NOT NULL') // Solo clientes con préstamos
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy('client.created_at', 'DESC')
+      .getManyAndCount()
+
+    const loansTable: ILoanTable[] = clients.map((client) => {
+      const loan = client.loans[client.loans.length - 1] // Último préstamo del cliente
+
+      return {
+        id: loan?.id || -1,
+        client_name: client.name,
+        amount: loan?.amount || 0,
+        dni: client.dni,
+        remaining_debt: loan?.total_pending || 0,
+        frequency: loan?.payment_plan?.frequency || '',
+        route: client?.route?.name || '',
+        status: loan?.status || ''
+      }
+    })
+
+    return handleSuccess({
+      data: loansTable,
+      total_data,
+      total_page: Math.ceil(total_data / limit),
+      page,
+      limit
+    })
+  } catch (error: any) {
+    return handleError(error.message)
   }
 }
