@@ -10,6 +10,7 @@ import {
 import { Route } from '../entities/route/route.entity'
 import { ICreateRoute } from '../entities/route/types'
 import { ILike } from 'typeorm'
+import { Client } from '../entities/client/client.entity'
 
 export const createRoute = async (
   route: ICreateRoute
@@ -139,6 +140,40 @@ export const updateRouteById = async (
 
     return handleSuccess(updatedRoute)
   } catch (error: any) {
+    return handleError(error.message)
+  }
+}
+
+export const deleteRouteById = async (
+  id: number
+): Promise<IHandleResponseController<Route>> => {
+  try {
+    const routeRepo = AppDataSource.getRepository(Route)
+
+    const routeToDelete = await routeRepo.findOne({ where: { id } })
+
+    if (!routeToDelete) {
+      return handleError('Ruta no encontrada')
+    }
+    await AppDataSource.transaction(async (manager) => {
+      await manager
+        .createQueryBuilder()
+        .update(Client)
+        .set({ route: null })
+        .where('id = :id', { id })
+        .execute()
+
+      await manager
+        .createQueryBuilder()
+        .delete()
+        .from(Route)
+        .where('id = :id', { id })
+        .execute()
+    })
+
+    return handleSuccess(routeToDelete)
+  } catch (error: any) {
+    console.error({ error })
     return handleError(error.message)
   }
 }

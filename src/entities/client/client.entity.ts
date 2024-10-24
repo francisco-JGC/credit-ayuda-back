@@ -35,8 +35,11 @@ export class Client {
   @Column()
   business_type: string
 
-  @ManyToOne(() => Route, (route) => route.client)
-  route: Route
+  @ManyToOne(() => Route, (route) => route.client, {
+    nullable: true,
+    onDelete: 'SET NULL'
+  })
+  route?: Route
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date

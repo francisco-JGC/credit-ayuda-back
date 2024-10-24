@@ -3,6 +3,7 @@ import { isAuth } from '../middlewares/isAuth.middleware'
 import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
 import {
   createRoute,
+  deleteRouteById,
   getAllRoutes,
   getPaginationRoutes,
   getRouteById,
@@ -17,6 +18,15 @@ router.post(
   authorizeRoles(['admin', 'inventory']),
   async (req, res) => {
     return res.json(await createRoute(req.body))
+  }
+)
+
+router.get(
+  '/delete/:id',
+  isAuth,
+  authorizeRoles(['admin', 'inventory']),
+  async (req, res) => {
+    return res.json(await deleteRouteById(Number(req.params.id)))
   }
 )
 
