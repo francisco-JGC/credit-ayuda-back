@@ -134,7 +134,7 @@ export const assignRouteToClient = async ({
       return handleNotFound('Cliente no encontrado')
     }
 
-    if (client.route.name === route_name) {
+    if (client?.route?.name === route_name) {
       return handleSuccess(client)
     }
 
@@ -189,7 +189,7 @@ export const getPaginationClient = async ({
         address: client.primary_address,
         current_debt:
           client?.loans?.[client?.loans?.length - 1]?.total_pending || 0,
-        route: client.route.name,
+        route: client?.route?.name || '',
         loan_status: client?.loans?.[client?.loans?.length - 1]?.status || ''
       }
     })
@@ -221,7 +221,7 @@ export const getClientByDni = async (
       return handleNotFound('Cliente no encontrado')
     }
 
-    return handleSuccess({ ...client, route_name: client.route.name })
+    return handleSuccess({ ...client, route_name: client?.route?.name || '' })
   } catch (error: any) {
     return handleError(error.message)
   }
