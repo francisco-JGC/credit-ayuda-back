@@ -54,7 +54,7 @@ export const createClient = async (
 
 export const getClientById = async (
   id: number
-): Promise<IHandleResponseController<Client>> => {
+): Promise<IHandleResponseController<ICreateClient>> => {
   try {
     const client = await AppDataSource.getRepository(Client).findOne({
       where: { id },
@@ -65,7 +65,7 @@ export const getClientById = async (
       return handleNotFound('Cliente no encontrado')
     }
 
-    return handleSuccess(client)
+    return handleSuccess({ ...client, route_name: client.route?.name || '' })
   } catch (error: any) {
     return handleError(error.message)
   }
