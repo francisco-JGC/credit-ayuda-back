@@ -5,7 +5,8 @@ import {
   createRoute,
   getAllRoutes,
   getPaginationRoutes,
-  getRouteById
+  getRouteById,
+  updateRouteById
 } from '../controllers/route.controller'
 
 const router = Router()
@@ -34,6 +35,15 @@ router.get(
   authorizeRoles(['admin', 'inventory']),
   async (req, res) => {
     return res.json(await getRouteById(Number(req.params.id)))
+  }
+)
+
+router.post(
+  '/update',
+  isAuth,
+  authorizeRoles(['admin', 'inventory']),
+  async (req, res) => {
+    return res.json(await updateRouteById(req.body))
   }
 )
 

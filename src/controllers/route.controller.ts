@@ -115,3 +115,30 @@ export const getRouteById = async (
     return handleError(error.message)
   }
 }
+
+export const updateRouteById = async (
+  route_info: Route
+): Promise<IHandleResponseController<Route>> => {
+  try {
+    const route = await AppDataSource.getRepository(Route).findOne({
+      where: { id: route_info.id }
+    })
+
+    if (!route) {
+      return handleNotFound('Ruta no encontrada')
+    }
+
+    const updatedRoute = AppDataSource.getRepository(Route).merge(
+      route,
+      route_info
+    )
+
+    await AppDataSource.transaction(async (manager) => {
+      await manager.save(updatedRoute)
+    })
+
+    return handleSuccess(updatedRoute)
+  } catch (error: any) {
+    return handleError(error.message)
+  }
+}
