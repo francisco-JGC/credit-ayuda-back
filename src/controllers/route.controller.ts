@@ -97,3 +97,21 @@ export const getPaginationRoutes = async ({
     return handleError(error.message)
   }
 }
+
+export const getRouteById = async (
+  id: number
+): Promise<IHandleResponseController<Route>> => {
+  try {
+    const route = await AppDataSource.getRepository(Route).findOne({
+      where: { id }
+    })
+
+    if (!route) {
+      return handleNotFound('Ruta no encontrada')
+    }
+
+    return handleSuccess(route)
+  } catch (error: any) {
+    return handleError(error.message)
+  }
+}

@@ -4,7 +4,8 @@ import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
 import {
   createRoute,
   getAllRoutes,
-  getPaginationRoutes
+  getPaginationRoutes,
+  getRouteById
 } from '../controllers/route.controller'
 
 const router = Router()
@@ -24,6 +25,15 @@ router.get(
   authorizeRoles(['admin', 'inventory']),
   async (_req, res) => {
     return res.json(await getAllRoutes())
+  }
+)
+
+router.get(
+  '/:id',
+  isAuth,
+  authorizeRoles(['admin', 'inventory']),
+  async (req, res) => {
+    return res.json(await getRouteById(Number(req.params.id)))
   }
 )
 
