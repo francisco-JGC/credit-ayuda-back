@@ -244,3 +244,30 @@ export const getPaginationLoans = async ({
     return handleError(error.message)
   }
 }
+
+export const getLoanById = async (
+  id: number
+): Promise<IHandleResponseController<Loan>> => {
+  try {
+    const loanRepo = AppDataSource.getRepository(Loan)
+
+    const loan = await loanRepo.findOne({
+      where: { id },
+      relations: [
+        'client',
+        'payment_plan',
+        'payment_plan.payment_schedules',
+        'penalty_plans',
+        'penalty_plans.penalty_payment_schedules'
+      ]
+    })
+
+    if (!loan) {
+      return handleNotFound('El id del prestamo no existe')
+    }
+
+    return handleSuccess(loan)
+  } catch (error: any) {
+    return handleError(error.message)
+  }
+}

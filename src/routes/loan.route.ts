@@ -1,7 +1,11 @@
 import { Router } from 'express'
 import { isAuth } from '../middlewares/isAuth.middleware'
 import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
-import { createLoan, getPaginationLoans } from '../controllers/loan.controller'
+import {
+  createLoan,
+  getLoanById,
+  getPaginationLoans
+} from '../controllers/loan.controller'
 
 const router = Router()
 
@@ -11,6 +15,15 @@ router.post(
   authorizeRoles(['admin', 'inventory']),
   async (req, res) => {
     return res.json(await createLoan(req.body))
+  }
+)
+
+router.get(
+  '/:id',
+  isAuth,
+  authorizeRoles(['admin', 'inventory']),
+  async (req, res) => {
+    return res.json(await getLoanById(Number(req.params.id)))
   }
 )
 
