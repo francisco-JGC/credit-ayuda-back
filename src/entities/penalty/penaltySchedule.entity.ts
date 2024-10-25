@@ -16,7 +16,7 @@ export class PenaltyPaymentSchedule {
   amount_paid: number
 
   @Column({ type: 'varchar', length: 50, default: 'pending' })
-  status: string
+  status: 'unpaid' | 'paid' | 'pending'
 
   @ManyToOne(
     () => PenaltyPlan,

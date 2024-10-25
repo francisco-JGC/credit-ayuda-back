@@ -5,7 +5,8 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
-  ManyToOne
+  ManyToOne,
+  CreateDateColumn
 } from 'typeorm'
 import { PaymentPlan } from './paymentPlan.entity'
 import { PenaltyPlan } from '../penalty/penaltyPlan.entity'
@@ -45,4 +46,7 @@ export class Loan {
 
   @ManyToOne(() => Client, (client) => client.loans, { eager: true })
   client: Client
+
+  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date
 }
