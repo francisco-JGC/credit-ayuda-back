@@ -186,6 +186,7 @@ export const getPaginationClient = async ({
         id: client.id,
         name: client.name,
         phone: client.primary_phone,
+        dni: client.dni,
         address: client.primary_address,
         current_debt:
           client?.loans?.[client?.loans?.length - 1]?.total_pending || 0,
