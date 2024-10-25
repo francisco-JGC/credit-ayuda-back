@@ -121,13 +121,9 @@ export const createPaymentSchedule = async (
       return newDate
     }
 
-    const addMonthsSkippingWeekends = (date: Date, months: number): Date => {
+    const addMonths = (date: Date, months: number): Date => {
       const newDate = new Date(date)
       newDate.setMonth(newDate.getMonth() + months)
-
-      while (isWeekend(newDate)) {
-        newDate.setDate(newDate.getDate() + 1)
-      }
       return newDate
     }
 
@@ -144,16 +140,18 @@ export const createPaymentSchedule = async (
           nextDueDate = addDaysSkippingWeekends(new Date(loan_date), i)
           break
         case 'weekly':
-          nextDueDate = addDaysSkippingWeekends(new Date(loan_date), i * 7)
+          nextDueDate = new Date(loan_date)
+          nextDueDate.setDate(nextDueDate.getDate() + i * 7)
           break
         case 'biweekly':
-          nextDueDate = addDaysSkippingWeekends(new Date(loan_date), i * 14)
+          nextDueDate = new Date(loan_date)
+          nextDueDate.setDate(nextDueDate.getDate() + i * 14)
           break
         case 'monthly':
-          nextDueDate = addMonthsSkippingWeekends(new Date(loan_date), i)
+          nextDueDate = addMonths(new Date(loan_date), i)
           break
         case 'yearly':
-          nextDueDate = addMonthsSkippingWeekends(new Date(loan_date), i * 12)
+          nextDueDate = addMonths(new Date(loan_date), i * 12)
           break
         default:
           return handleNotFound('Frecuencia no válida')
@@ -200,7 +198,6 @@ export const getPaginationLoans = async ({
 
     const clientRepository = AppDataSource.getRepository(Client)
 
-    // Usamos QueryBuilder para asegurarnos de que solo obtenemos clientes con préstamos
     const [clients, total_data] = await clientRepository
       .createQueryBuilder('client')
       .leftJoinAndSelect('client.route', 'route')
@@ -215,14 +212,14 @@ export const getPaginationLoans = async ({
       .where('client.dni ILIKE :filter', {
         filter: `%${filter ? filter : ''}%`
       })
-      .andWhere('loans.id IS NOT NULL') // Solo clientes con préstamos
+      .andWhere('loans.id IS NOT NULL')
       .skip((page - 1) * limit)
       .take(limit)
       .orderBy('client.created_at', 'DESC')
       .getManyAndCount()
 
     const loansTable: ILoanTable[] = clients.map((client) => {
-      const loan = client.loans[client.loans.length - 1] // Último préstamo del cliente
+      const loan = client.loans[client.loans.length - 1]
 
       return {
         id: loan?.id || -1,
