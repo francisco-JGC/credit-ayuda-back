@@ -255,6 +255,7 @@ export const getLoanById = async (
       where: { id },
       relations: [
         'client',
+        'client.route',
         'payment_plan',
         'payment_plan.payment_schedules',
         'penalty_plans',
