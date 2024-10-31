@@ -4,6 +4,7 @@ import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
 import {
   createLoan,
   getLoanById,
+  getLoans,
   getPaginationLoans
 } from '../controllers/loan.controller'
 
@@ -24,6 +25,26 @@ router.get(
   authorizeRoles(['admin', 'inventory']),
   async (req, res) => {
     return res.json(await getLoanById(Number(req.params.id)))
+  }
+)
+
+router.get(
+  '/full/:page/:limit/:filter?',
+  isAuth,
+  authorizeRoles(['admin']),
+  async (req, res) => {
+    const { page, limit, filter } = req.params
+
+    const pageNumber = parseInt(page, 10)
+    const limitNumber = parseInt(limit, 10)
+
+    return res.json(
+      await getLoans({
+        page: pageNumber,
+        limit: limitNumber,
+        filter
+      })
+    )
   }
 )
 
