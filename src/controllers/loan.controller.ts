@@ -1,4 +1,4 @@
-import { EntityManager } from 'typeorm'
+import { EntityManager, Like } from 'typeorm'
 import { AppDataSource } from '../config/database.config'
 import { Client } from '../entities/client/client.entity'
 import { Loan } from '../entities/loan/loan.entity'
@@ -109,7 +109,7 @@ export const createPaymentSchedule = async (
     const remainder = total_recovered - totalCalculated
 
     const addDaysSkippingWeekends = (date: Date, days: number): Date => {
-      let newDate = new Date(date)
+      const newDate = new Date(date)
       let addedDays = 0
 
       while (addedDays < days) {
@@ -184,6 +184,39 @@ export const createPaymentSchedule = async (
   }
 }
 
+export const getLoans = async ({ filter, page, limit }: IPagination) => {
+  try {
+    if (isNaN(page) || isNaN(limit)) {
+      return handleNotFound('Número de página o límite son valores inválidos')
+    }
+    const loansRepository = AppDataSource.getRepository(Loan)
+    const [loans, loansCount] = await loansRepository.findAndCount({
+      relations: { client: { route: true }, payment_plan: true },
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { created_at: 'DESC' },
+      where: {
+        client: {
+          dni: Like(`%${filter ?? ''}%`)
+        }
+      }
+    })
+
+    return handleSuccess({
+      data: loans,
+      total_data: loansCount,
+      total_page: Math.ceil(loansCount / limit),
+      page,
+      limit
+    })
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return handleError(error.message)
+    }
+    return handleError('Error desconocido')
+  }
+}
+
 export const getPaginationLoans = async ({
   filter,
   page,
@@ -210,7 +243,7 @@ export const getPaginationLoans = async ({
         'penalty_payment_schedules'
       )
       .where('client.dni ILIKE :filter', {
-        filter: `%${filter ? filter : ''}%`
+        filter: `%${filter ?? ''}%`
       })
       .andWhere('loans.id IS NOT NULL')
       .skip((page - 1) * limit)
