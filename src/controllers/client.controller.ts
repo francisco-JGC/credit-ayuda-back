@@ -144,7 +144,7 @@ export const assignRouteToClient = async ({
       return handleNotFound('No se encontro una ruta con ese nombre')
     }
 
-    client.route = route as Route
+    client.route = route
 
     await AppDataSource.getRepository(Client).save(client)
 
@@ -167,7 +167,7 @@ export const getPaginationClient = async ({
     }
 
     const clients = await AppDataSource.getRepository(Client).find({
-      where: { dni: ILike(`%${filter ? filter : ''}%`) },
+      where: { dni: ILike(`%${filter || ''}%`) },
       relations: [
         'route',
         'loans',
