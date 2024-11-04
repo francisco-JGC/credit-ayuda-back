@@ -4,7 +4,7 @@ import { Client } from '../entities/client/client.entity'
 import { Loan } from '../entities/loan/loan.entity'
 import { PaymentPlan } from '../entities/loan/paymentPlan.entity'
 import { PaymentSchedule } from '../entities/loan/paymentSchedule.entity'
-import { ICreateLoan, ILoanTable } from '../entities/loan/types/loan'
+import { ICreateLoan, ILoanTable, LoanFrequency, LoanStatus } from '../entities/loan/types/loan'
 import {
   handleError,
   handleNotFound,
@@ -184,7 +184,16 @@ export const createPaymentSchedule = async (
   }
 }
 
-export const getLoans = async ({ filter, page, limit }: IPagination) => {
+interface IGetLoan {
+  page: number
+  limit: number
+  dni?: string
+  frequency?: LoanFrequency
+  status?: LoanStatus
+  route?: string
+}
+
+export const getLoans = async ({ page, limit, frequency, status, route, dni }: IGetLoan) => {
   try {
     if (isNaN(page) || isNaN(limit)) {
       return handleNotFound('Número de página o límite son valores inválidos')
@@ -197,8 +206,15 @@ export const getLoans = async ({ filter, page, limit }: IPagination) => {
       order: { created_at: 'DESC' },
       where: {
         client: {
-          dni: Like(`%${filter ?? ''}%`)
-        }
+          dni: Like(`%${dni ?? ''}%`),
+          route: {
+            name: route
+          }
+        },
+        payment_plan: {
+          frequency
+        },
+        status
       }
     })
 
