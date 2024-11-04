@@ -19,3 +19,7 @@ export interface ILoanTable {
   route: string
   status: 'active' | 'paid' | 'pending' | 'rejected'
 }
+
+export type LoanFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly'
+
+export type LoanStatus = 'active' | 'paid' | 'pending' | 'rejected'
