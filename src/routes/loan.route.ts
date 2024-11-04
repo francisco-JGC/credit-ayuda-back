@@ -7,6 +7,7 @@ import {
   getLoans,
   getPaginationLoans
 } from '../controllers/loan.controller'
+import { LoanFrequency, LoanStatus } from '../entities/loan/types/loan'
 
 const router = Router()
 
@@ -34,15 +35,20 @@ router.get(
   authorizeRoles(['admin']),
   async (req, res) => {
     const { page, limit, filter } = req.params
-
     const pageNumber = parseInt(page, 10)
     const limitNumber = parseInt(limit, 10)
+    const frequency = (req.query.frequency) as LoanFrequency | undefined
+    const status = req.query.status as LoanStatus | undefined
+    const route = req.query.route as string | undefined
 
     return res.json(
       await getLoans({
         page: pageNumber,
         limit: limitNumber,
-        filter
+        dni: filter,
+        frequency,
+        status,
+        route
       })
     )
   }
