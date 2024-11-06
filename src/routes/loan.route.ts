@@ -1,6 +1,4 @@
 import { Router } from 'express'
-import { isAuth } from '../middlewares/isAuth.middleware'
-import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
 import {
   createLoan,
   getLoanById,
@@ -8,6 +6,8 @@ import {
   getPaginationLoans
 } from '../controllers/loan.controller'
 import { LoanFrequency, LoanStatus } from '../entities/loan/types/loan'
+import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
+import { isAuth } from '../middlewares/isAuth.middleware'
 
 const router = Router()
 

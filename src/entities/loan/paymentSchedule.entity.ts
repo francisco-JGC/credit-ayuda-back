@@ -16,7 +16,7 @@ export class PaymentSchedule {
   amount_paid: number
 
   @Column({ type: 'varchar', length: 50, default: 'pending' })
-  status: string
+  status: 'pending' | 'paid' | 'late'
 
   @ManyToOne(() => PaymentPlan, (paymentPlan) => paymentPlan.payment_schedules)
   payment_plan: PaymentPlan
