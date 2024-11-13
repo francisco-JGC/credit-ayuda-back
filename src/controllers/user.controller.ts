@@ -82,18 +82,17 @@ export const findUserByUsername = async ({
   try {
     const user = await AppDataSource.getRepository(User).findOne({
       where: { username },
-      relations: ['roles']
+      relations: {
+        roles: true,
+        route: true
+      }
     })
 
     if (!user) {
       return handleNotFound('Usuario no encontrado')
     }
 
-    return handleSuccess({
-      username: user.username,
-      id: user.id,
-      roles: user.roles
-    })
+    return handleSuccess(user)
   } catch (error: any) {
     return handleError(error.message)
   }
@@ -105,7 +104,10 @@ export const getUserById = async (
   try {
     const user = await AppDataSource.getRepository(User).findOne({
       where: { id },
-      relations: ['roles']
+      relations: {
+        roles: true,
+        route: true
+      }
     })
 
     if (!user) {
@@ -181,11 +183,7 @@ export const updateUserById = async (
       delete user.password
     }
 
-    AppDataSource.getRepository(User).merge(userExists, user)
-    const updatedUser = await AppDataSource.getRepository(User).save(userExists)
-
-    await assignRoleToUser({ userId: id, role_name: user.role_name })
-
+    const updatedUser = await AppDataSource.getRepository(User).save(user)
     return handleSuccess(updatedUser)
   } catch (error: any) {
     return handleError(error.message)
@@ -234,7 +232,7 @@ export const getPaginationUser = async ({
     }
 
     const users = await AppDataSource.getRepository(User).find({
-      where: { username: ILike(`%${filter ? filter : ''}%`) },
+      where: { username: ILike(`%${filter || ''}%`) },
       relations: ['roles'],
       skip: (page - 1) * limit,
       take: limit,
