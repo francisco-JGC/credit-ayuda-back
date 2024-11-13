@@ -9,8 +9,8 @@ const DB_PASS = process.env.DB_PASS // Contraseña
 const DB_HOST = process.env.DB_HOST
 const DB_PORT = process.env.DB_PORT
 
-export const restoreDatabase = (fileName: string): Promise<boolean> => {
-  return new Promise((resolve) => {
+export const restoreDatabase = async (fileName: string): Promise<boolean> => {
+  return await new Promise((resolve) => {
     const downloadDir = path.join(os.homedir(), 'Downloads/backup')
     const filePath = path.join(downloadDir, fileName)
 
