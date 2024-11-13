@@ -1,4 +1,4 @@
-import { EntityManager, Like } from 'typeorm'
+import { EntityManager, In, Like } from 'typeorm'
 import { AppDataSource } from '../config/database.config'
 import { Client } from '../entities/client/client.entity'
 import { Loan } from '../entities/loan/loan.entity'
@@ -66,6 +66,17 @@ export const createLoan = async (
     await createPaymentSchedule(client.id, createdLoan.id)
 
     return handleSuccess(createdLoan)
+  } catch (error: any) {
+    return handleError(error.message)
+  }
+}
+
+export const updateLoan = async (loan: Loan) => {
+  try {
+    const loanRepo = AppDataSource.getRepository(Loan)
+    const updatedLoan = await loanRepo.save(loan)
+
+    return handleSuccess(updatedLoan)
   } catch (error: any) {
     return handleError(error.message)
   }
@@ -191,9 +202,53 @@ interface IGetLoan {
   frequency?: LoanFrequency
   status?: LoanStatus
   route?: string
+  statuses?: LoanStatus[]
 }
 
 export const getLoans = async ({ page, limit, frequency, status, route, dni }: IGetLoan) => {
+  try {
+    if (isNaN(page) || isNaN(limit)) {
+      return handleNotFound('Número de página o límite son valores inválidos')
+    }
+
+    const defaultStatus = ['active', 'paid', 'rejected']
+
+    const loansRepository = AppDataSource.getRepository(Loan)
+    const [loans, loansCount] = await loansRepository.findAndCount({
+      relations: { client: { route: true }, payment_plan: true },
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { created_at: 'DESC' },
+      where: {
+        client: {
+          dni: Like(`%${dni ?? ''}%`),
+          route: {
+            name: route
+          }
+        },
+        payment_plan: {
+          frequency
+        },
+        status: status || In(defaultStatus)
+      }
+    })
+
+    return handleSuccess({
+      data: loans,
+      total_data: loansCount,
+      total_page: Math.ceil(loansCount / limit),
+      page,
+      limit
+    })
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return handleError(error.message)
+    }
+    return handleError('Error desconocido')
+  }
+}
+
+export const getRequests = async ({ page, limit, frequency, route, dni }: IGetLoan) => {
   try {
     if (isNaN(page) || isNaN(limit)) {
       return handleNotFound('Número de página o límite son valores inválidos')
@@ -214,7 +269,7 @@ export const getLoans = async ({ page, limit, frequency, status, route, dni }: I
         payment_plan: {
           frequency
         },
-        status
+        status: 'pending'
       }
     })
 
