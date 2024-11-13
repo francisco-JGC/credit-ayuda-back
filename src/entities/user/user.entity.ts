@@ -5,7 +5,7 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm'
 import { Role } from '../role/role.entity'
@@ -26,7 +26,7 @@ export class User {
   @JoinTable()
   roles: Role[]
 
-  @OneToOne(() => Route)
+  @ManyToOne(() => Route, (route) => route.user)
   @JoinColumn()
   route?: Route
 

@@ -1,4 +1,5 @@
 import type { Role } from '../../role/role.entity'
+import { User } from '../user.entity'
 
 export interface IResponseUser {
   username: string
@@ -26,9 +27,4 @@ export interface ILoginResponse {
   role: string
 }
 
-export interface IUpdateUser {
-  id: number
-  username: string
-  password?: string
-  role_name: string
-}
+export type IUpdateUser = Omit<User, 'password' | 'created_at'>

@@ -208,7 +208,12 @@ export const getAllUsers = async (): Promise<
   IHandleResponseController<IResponseUser[]>
 > => {
   try {
-    const users = await AppDataSource.getRepository(User).find()
+    const users = await AppDataSource.getRepository(User).find({
+      relations: {
+        roles: true,
+        route: true
+      }
+    })
 
     return handleSuccess(users)
   } catch (error: any) {

@@ -22,6 +22,9 @@ export class Route {
   @OneToMany(() => Client, (client) => client.route)
   client?: Client[]
 
+  @OneToMany(() => Client, (client) => client.route)
+  user?: Client[]
+
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date
 }
