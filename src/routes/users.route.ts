@@ -5,7 +5,8 @@ import {
   updateUserById,
   getPaginationUser,
   getAllUsers,
-  getUserById
+  getUserById,
+  findUserByUsername
 } from '../controllers/user.controller'
 import { isAuth } from '../middlewares/isAuth.middleware'
 import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
@@ -21,6 +22,11 @@ router.get(
   }
 )
 
+router.get('/username/:username', async (req, res) => {
+  const username = req.params.username
+  res.json(await findUserByUsername({ username }))
+})
+
 router.post(
   '/create',
   isAuth,
@@ -29,6 +35,18 @@ router.post(
     return res.json(await createUser(req.body))
   }
 )
+
+router.post('/update/:id', async (req, res) => {
+  res.json(await updateUserById(req.body, Number(req.params.id)))
+})
+
+router.post('/delete', async (req, res) => {
+  res.json(await deleteUserById(req.body.id))
+})
+
+router.get('/:id', async (req, res) => {
+  res.json(await getUserById(Number(req.params.id)))
+})
 
 router.get(
   '/:page/:limit/:filter?',
@@ -49,17 +67,5 @@ router.get(
     )
   }
 )
-
-router.post('/delete', async (req, res) => {
-  res.json(await deleteUserById(req.body.id))
-})
-
-router.post('/update/:id', async (req, res) => {
-  res.json(await updateUserById(req.body, Number(req.params.id)))
-})
-
-router.get('/:id', async (req, res) => {
-  res.json(await getUserById(Number(req.params.id)))
-})
 
 export default router
