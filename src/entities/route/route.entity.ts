@@ -1,9 +1,9 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  OneToMany
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn
 } from 'typeorm'
 
 import { Client } from '../client/client.entity'
