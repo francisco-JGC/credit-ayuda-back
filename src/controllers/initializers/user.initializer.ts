@@ -24,11 +24,12 @@ export const createDefaultUsers = async () => {
 
         if (role.success) {
           const createdUser = await createUser({ ...user })
-          if (createdUser.success)
+          if (createdUser.success) {
             await assignRoleToUser({
               userId: createdUser.data?.id || -1,
               role_name: user.rolename
             })
+}
         }
       }
     }
