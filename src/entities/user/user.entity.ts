@@ -1,12 +1,15 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  Entity,
+  JoinColumn,
+  JoinTable,
   ManyToMany,
-  JoinTable
+  OneToOne,
+  PrimaryGeneratedColumn
 } from 'typeorm'
 import { Role } from '../role/role.entity'
+import { Route } from '../route/route.entity'
 
 @Entity('user')
 export class User {
@@ -22,6 +25,10 @@ export class User {
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable()
   roles: Role[]
+
+  @OneToOne(() => Route)
+  @JoinColumn()
+  route?: Route
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date
