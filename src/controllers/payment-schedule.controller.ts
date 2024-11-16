@@ -1,12 +1,31 @@
 import { AppDataSource } from '../config/database.config'
+import { Loan } from '../entities/loan/loan.entity'
 import { PaymentSchedule } from '../entities/loan/paymentSchedule.entity'
+import { IUpdatePayment } from '../entities/loan/types/payment'
 import { handleError, handleSuccess } from './types'
 
-export async function updatePaymentSchedule(newPaymentSchedule: PaymentSchedule) {
-  const dataSource = AppDataSource.getRepository(PaymentSchedule)
+export async function updatePaymentSchedule(
+  newPaymentSchedule: IUpdatePayment
+) {
+  const paymentScheduleRepo = AppDataSource.getRepository(PaymentSchedule)
+  const loanRepo = AppDataSource.getRepository(Loan)
   try {
-    const entity = dataSource.create(newPaymentSchedule)
-    const newEntity = await dataSource.save(entity)
+    const loan = await loanRepo.findOne({
+      where: { id: newPaymentSchedule.loan_id }
+    })
+
+    if (!loan) {
+      return handleError('El prestamo no existe')
+    }
+
+    loan.total_pending -= newPaymentSchedule.amount_paid
+
+    const entity = paymentScheduleRepo.create(newPaymentSchedule)
+    const newEntity = await paymentScheduleRepo.save(entity)
+
+    await AppDataSource.transaction(async (manager) => {
+      await manager.save(loan)
+    })
     return handleSuccess(newEntity)
   } catch (error) {
     if (error instanceof Error) {

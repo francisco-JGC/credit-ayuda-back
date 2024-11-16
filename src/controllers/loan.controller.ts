@@ -4,7 +4,12 @@ import { Client } from '../entities/client/client.entity'
 import { Loan } from '../entities/loan/loan.entity'
 import { PaymentPlan } from '../entities/loan/paymentPlan.entity'
 import { PaymentSchedule } from '../entities/loan/paymentSchedule.entity'
-import { ICreateLoan, ILoanTable, LoanFrequency, LoanStatus } from '../entities/loan/types/loan'
+import {
+  ICreateLoan,
+  ILoanTable,
+  LoanFrequency,
+  LoanStatus
+} from '../entities/loan/types/loan'
 import {
   handleError,
   handleNotFound,
@@ -74,8 +79,19 @@ export const createLoan = async (
 export const updateLoan = async (loan: Loan) => {
   try {
     const loanRepo = AppDataSource.getRepository(Loan)
-    const updatedLoan = await loanRepo.save(loan)
 
+    const loanExist = await loanRepo.findOne({
+      where: { id: loan.id }
+    })
+
+    if (!loanExist) {
+      return handleError('El prestamo no existe')
+    }
+
+    const updatedLoan = await loanRepo.save({
+      ...loan,
+      total_pending: loanExist.total_recovered
+    })
     return handleSuccess(updatedLoan)
   } catch (error: any) {
     return handleError(error.message)
@@ -205,7 +221,14 @@ interface IGetLoan {
   statuses?: LoanStatus[]
 }
 
-export const getLoans = async ({ page, limit, frequency, status, route, dni }: IGetLoan) => {
+export const getLoans = async ({
+  page,
+  limit,
+  frequency,
+  status,
+  route,
+  dni
+}: IGetLoan) => {
   try {
     if (isNaN(page) || isNaN(limit)) {
       return handleNotFound('Número de página o límite son valores inválidos')
@@ -248,7 +271,13 @@ export const getLoans = async ({ page, limit, frequency, status, route, dni }: I
   }
 }
 
-export const getRequests = async ({ page, limit, frequency, route, dni }: IGetLoan) => {
+export const getRequests = async ({
+  page,
+  limit,
+  frequency,
+  route,
+  dni
+}: IGetLoan) => {
   try {
     if (isNaN(page) || isNaN(limit)) {
       return handleNotFound('Número de página o límite son valores inválidos')
