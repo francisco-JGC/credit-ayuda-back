@@ -219,6 +219,7 @@ interface IGetLoan {
   status?: LoanStatus
   route?: string
   statuses?: LoanStatus[]
+  route_name?: string
 }
 
 export const getLoans = async ({
@@ -260,6 +261,61 @@ export const getLoans = async ({
       data: loans,
       total_data: loansCount,
       total_page: Math.ceil(loansCount / limit),
+      page,
+      limit
+    })
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return handleError(error.message)
+    }
+    return handleError('Error desconocido')
+  }
+}
+
+export const getLoansByRouteUser = async ({
+  route_name,
+  page,
+  limit,
+  frequency,
+  status,
+  route,
+  dni
+}: IGetLoan) => {
+  try {
+    if (isNaN(page) || isNaN(limit)) {
+      return handleNotFound('Número de página o límite son valores inválidos')
+    }
+
+    const defaultStatus = ['active', 'paid', 'rejected']
+
+    const loansRepository = AppDataSource.getRepository(Loan)
+    const [loans] = await loansRepository.findAndCount({
+      relations: { client: { route: true }, payment_plan: true },
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { created_at: 'DESC' },
+      where: {
+        client: {
+          dni: Like(`%${dni ?? ''}%`),
+          route: {
+            name: route
+          }
+        },
+        payment_plan: {
+          frequency
+        },
+        status: status || In(defaultStatus)
+      }
+    })
+
+    const filteredLoans = loans.filter(
+      (loan) => loan.client.route?.name === route_name
+    )
+
+    return handleSuccess({
+      data: filteredLoans,
+      total_data: filteredLoans.length,
+      total_page: Math.ceil(filteredLoans.length / limit),
       page,
       limit
     })

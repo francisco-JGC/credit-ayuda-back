@@ -3,6 +3,7 @@ import {
   createLoan,
   getLoanById,
   getLoans,
+  getLoansByRouteUser,
   getPaginationLoans,
   getRequests,
   updateLoan
@@ -39,13 +40,41 @@ router.get(
     const { page, limit, filter } = req.params
     const pageNumber = parseInt(page, 10)
     const limitNumber = parseInt(limit, 10)
-    const frequency = (req.query.frequency) as LoanFrequency | undefined
+    const frequency = req.query.frequency as LoanFrequency | undefined
     const status = req.query.status as LoanStatus | undefined
     const statuses = req.query.statuses as LoanStatus[] | undefined
     const route = req.query.route as string | undefined
 
     return res.json(
       await getLoans({
+        page: pageNumber,
+        limit: limitNumber,
+        dni: filter,
+        frequency,
+        status,
+        statuses,
+        route
+      })
+    )
+  }
+)
+
+router.get(
+  '/my-route/full/:page/:limit/:filter?',
+  isAuth,
+  authorizeRoles(['admin']),
+  async (req: any, res) => {
+    const { page, limit, filter } = req.params
+    const pageNumber = parseInt(page, 10)
+    const limitNumber = parseInt(limit, 10)
+    const frequency = req.query.frequency as LoanFrequency | undefined
+    const status = req.query.status as LoanStatus | undefined
+    const statuses = req.query.statuses as LoanStatus[] | undefined
+    const route = req.query.route as string | undefined
+
+    return res.json(
+      await getLoansByRouteUser({
+        route_name: req.user.route_name,
         page: pageNumber,
         limit: limitNumber,
         dni: filter,
@@ -66,7 +95,7 @@ router.get(
     const { page, limit, filter } = req.params
     const pageNumber = parseInt(page, 10)
     const limitNumber = parseInt(limit, 10)
-    const frequency = (req.query.frequency) as LoanFrequency | undefined
+    const frequency = req.query.frequency as LoanFrequency | undefined
     const route = req.query.route as string | undefined
 
     return res.json(
