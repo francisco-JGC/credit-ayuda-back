@@ -24,7 +24,7 @@ export const login = async ({
   try {
     const user = await AppDataSource.getRepository(User).findOne({
       where: { username },
-      relations: ['roles']
+      relations: ['roles', 'route']
     })
 
     if (!user) {
@@ -44,11 +44,13 @@ export const login = async ({
     }
 
     const token = sign(
-      { id: user.id, role: user?.roles[0]?.name || '' },
-      process.env.JWT_SECRET as string,
       {
-        expiresIn: '1d'
-      }
+        id: user.id,
+        role: user?.roles[0]?.name || '',
+        route_name: user?.route?.name || ''
+      },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '1d' }
     )
 
     return {
