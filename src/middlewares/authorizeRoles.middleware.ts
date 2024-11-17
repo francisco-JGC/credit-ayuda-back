@@ -1,6 +1,12 @@
 import { Response, Request, NextFunction } from 'express'
 import { verify } from 'jsonwebtoken'
 
+declare module 'express' {
+  interface Request {
+    user?: any
+  }
+}
+
 export const authorizeRoles = (allowedRoles: string[]) => {
   return async (
     req: Request,
@@ -23,6 +29,7 @@ export const authorizeRoles = (allowedRoles: string[]) => {
       const decoded = verify(token, process.env.JWT_SECRET as string) as {
         role: string
       }
+      req.user = decoded
 
       if (allowedRoles.includes(decoded.role)) {
         return next()
