@@ -245,7 +245,7 @@ export const getLoans = async ({
       order: { created_at: 'DESC' },
       where: {
         client: {
-          dni: Like(`%${dni ?? ''}%`),
+          name: Like(`%${dni ?? ''}%`),
           route: {
             name: route
           }
