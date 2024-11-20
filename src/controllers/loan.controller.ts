@@ -288,6 +288,7 @@ export const getLoansByRouteUser = async ({
 
     const defaultStatus = ['active', 'paid', 'rejected']
 
+    console.log({ dni })
     const loansRepository = AppDataSource.getRepository(Loan)
     const [loans] = await loansRepository.findAndCount({
       relations: { client: { route: true }, payment_plan: true },
@@ -296,7 +297,7 @@ export const getLoansByRouteUser = async ({
       order: { created_at: 'DESC' },
       where: {
         client: {
-          dni: Like(`%${dni ?? ''}%`),
+          name: Like(`%${dni ?? ''}%`),
           route: {
             name: route
           }
