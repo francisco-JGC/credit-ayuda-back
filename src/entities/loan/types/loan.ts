@@ -7,7 +7,18 @@ export interface ICreateLoan {
   total_payments: number
   payment_amount: number
   total_recovered: number
+
+  payment_schedule?: ICreatePaymentSchedule[]
 }
+
+export interface ICreatePaymentSchedule {
+  due_date: string
+  amount_due: string
+  amount_paid: string
+  status: PaymentStatus
+}
+
+export type PaymentStatus = 'paid' | 'pending' | 'late'
 
 export interface ILoanTable {
   id: number

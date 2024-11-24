@@ -6,6 +6,7 @@ import { PaymentPlan } from '../entities/loan/paymentPlan.entity'
 import { PaymentSchedule } from '../entities/loan/paymentSchedule.entity'
 import {
   ICreateLoan,
+  ICreatePaymentSchedule,
   ICredit,
   ILoanTable,
   LoanFrequency,
@@ -69,7 +70,11 @@ export const createLoan = async (
       await manager.save(client)
     })
 
-    await createPaymentSchedule(client.id, createdLoan.id)
+    await createPaymentSchedule(
+      client.id,
+      createdLoan.id,
+      loan_info.payment_schedule || []
+    )
 
     return handleSuccess(createdLoan)
   } catch (error: any) {
@@ -101,7 +106,8 @@ export const updateLoan = async (loan: Loan) => {
 
 export const createPaymentSchedule = async (
   clientId: number,
-  loanId: number
+  loanId: number,
+  payment_schedule: ICreatePaymentSchedule[]
 ): Promise<IHandleResponseController<PaymentPlan>> => {
   try {
     const clientRepo = AppDataSource.getRepository(Client)
@@ -118,80 +124,23 @@ export const createPaymentSchedule = async (
     if (!client) {
       return handleNotFound('Cliente no encontrado')
     }
+
     const loan = client.loans.find((loan) => loan.id === loanId)
 
     if (!loan) {
-      return handleNotFound('Prestamo no encontrado')
+      return handleNotFound('Préstamo no encontrado')
     }
 
     const { payment_plan: paymentPlan } = loan
-    const loan_date = loan.loan_date
     const schedules: PaymentSchedule[] = []
 
-    const total_recovered = loan.total_recovered
     const total_payments = paymentPlan.total_payments
-    const frequency = paymentPlan.frequency
 
-    const amount_due_per_term = Math.floor(total_recovered / total_payments)
-    const totalCalculated = amount_due_per_term * total_payments
-    const remainder = total_recovered - totalCalculated
-
-    const addDaysSkippingWeekends = (date: Date, days: number): Date => {
-      const newDate = new Date(date)
-      let addedDays = 0
-
-      while (addedDays < days) {
-        newDate.setDate(newDate.getDate() + 1)
-        if (!isWeekend(newDate)) {
-          addedDays++
-        }
-      }
-      return newDate
-    }
-
-    const addMonths = (date: Date, months: number): Date => {
-      const newDate = new Date(date)
-      newDate.setMonth(newDate.getMonth() + months)
-      return newDate
-    }
-
-    const isWeekend = (date: Date): boolean => {
-      const day = date.getDay()
-      return day === 6 || day === 0
-    }
-
-    for (let i = 1; i < total_payments; i++) {
-      let nextDueDate: Date
-
-      switch (frequency) {
-        case 'daily':
-          nextDueDate = addDaysSkippingWeekends(new Date(loan_date), i)
-          break
-        case 'weekly':
-          nextDueDate = new Date(loan_date)
-          nextDueDate.setDate(nextDueDate.getDate() + i * 7)
-          break
-        case 'biweekly':
-          nextDueDate = new Date(loan_date)
-          nextDueDate.setDate(nextDueDate.getDate() + i * 14)
-          break
-        case 'monthly':
-          nextDueDate = addMonths(new Date(loan_date), i)
-          break
-        case 'yearly':
-          nextDueDate = addMonths(new Date(loan_date), i * 12)
-          break
-        default:
-          return handleNotFound('Frecuencia no válida')
-      }
-
+    for (let i = 1; i <= total_payments; i++) {
       const paymentSchedule = new PaymentSchedule()
-      paymentSchedule.due_date = nextDueDate
-      paymentSchedule.amount_due =
-        i === total_payments - 1
-          ? amount_due_per_term + remainder
-          : amount_due_per_term
+      paymentSchedule.amount_due = Number(payment_schedule[i - 1].amount_due)
       paymentSchedule.amount_paid = 0
+      paymentSchedule.due_date = payment_schedule[i - 1].due_date as any
       paymentSchedule.status = 'pending'
       paymentSchedule.payment_plan = paymentPlan
 
@@ -451,7 +400,14 @@ export const getLoanById = async (
         'payment_plan.payment_schedules',
         'penalty_plans',
         'penalty_plans.penalty_payment_schedules'
-      ]
+      ],
+      order: {
+        payment_plan: {
+          payment_schedules: {
+            due_date: 'ASC'
+          }
+        }
+      }
     })
 
     if (!loan) {
