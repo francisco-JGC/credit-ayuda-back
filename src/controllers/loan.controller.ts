@@ -227,7 +227,6 @@ export const getLoansByRouteUser = async ({
   page,
   limit,
   frequency,
-  status,
   route,
   dni
 }: IGetLoan) => {
@@ -235,8 +234,6 @@ export const getLoansByRouteUser = async ({
     if (isNaN(page) || isNaN(limit)) {
       return handleNotFound('Número de página o límite son valores inválidos')
     }
-
-    const defaultStatus = ['active', 'paid', 'rejected']
 
     console.log({ dni })
     const loansRepository = AppDataSource.getRepository(Loan)
@@ -255,7 +252,7 @@ export const getLoansByRouteUser = async ({
         payment_plan: {
           frequency
         },
-        status: status || In(defaultStatus)
+        status: 'active'
       }
     })
 
