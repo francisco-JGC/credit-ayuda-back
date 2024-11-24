@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import {
   createLoan,
+  getFilteredDatesLoans,
   getLoanById,
   getLoans,
   getLoansByRouteUser,
@@ -133,5 +134,19 @@ router.get(
 router.put('/update', isAuth, authorizeRoles(['admin']), async (req, res) => {
   return res.json(await updateLoan(req.body))
 })
+
+router.get(
+  '/filter-type/:filterType/date/:date',
+  isAuth,
+  authorizeRoles(['admin']),
+  async (req, res) => {
+    return res.json(
+      await getFilteredDatesLoans({
+        filter_type: req.params.filterType as any,
+        date: req.params.date
+      })
+    )
+  }
+)
 
 export default router

@@ -6,6 +6,7 @@ import { PaymentPlan } from '../entities/loan/paymentPlan.entity'
 import { PaymentSchedule } from '../entities/loan/paymentSchedule.entity'
 import {
   ICreateLoan,
+  ICredit,
   ILoanTable,
   LoanFrequency,
   LoanStatus
@@ -459,6 +460,107 @@ export const getLoanById = async (
 
     return handleSuccess(loan)
   } catch (error: any) {
+    return handleError(error.message)
+  }
+}
+
+export const getFilteredDatesLoans = async ({
+  filter_type,
+  date
+}: {
+  filter_type: 'daily' | 'monthly'
+  date: string
+}): Promise<IHandleResponseController<ICredit[]>> => {
+  const targetDate = new Date(date)
+
+  const loanRepository = AppDataSource.getRepository(Loan)
+
+  try {
+    let loansQuery = loanRepository
+      .createQueryBuilder('loan')
+      .leftJoinAndSelect('loan.payment_plan', 'payment_plan')
+      .leftJoinAndSelect('payment_plan.payment_schedules', 'payment_schedules')
+      .leftJoinAndSelect('loan.client', 'client')
+      .leftJoinAndSelect('client.route', 'route')
+      .select([
+        'loan.id',
+        'loan.amount',
+        'loan.total_recovered',
+        'loan.total_pending',
+        'client.name',
+        'route.name',
+        'payment_plan',
+        'payment_schedules'
+      ])
+      .andWhere('loan.status = :status', { status: 'active' })
+
+    if (filter_type === 'daily') {
+      loansQuery = loansQuery.andWhere(
+        'DATE(payment_schedules.due_date) = :targetDate',
+        { targetDate: targetDate.toISOString().split('T')[0] }
+      )
+    } else if (filter_type === 'monthly') {
+      loansQuery = loansQuery
+        .andWhere('YEAR(payment_schedules.due_date) = :year', {
+          year: targetDate.getFullYear()
+        })
+        .andWhere('MONTH(payment_schedules.due_date) = :month', {
+          month: targetDate.getMonth() + 1
+        })
+    } else {
+      return handleNotFound('Filtros de fecha inválidos')
+    }
+
+    const loans = await loansQuery.getMany()
+
+    const accumulatedLoans = new Map<string, any>()
+
+    loans.forEach((loan) => {
+      if (!loan.payment_plan || !loan.payment_plan.payment_schedules) {
+        console.warn(`Préstamo sin plan de pago o pagos: ${loan.id}`)
+        return
+      }
+
+      const routeName = loan.client.route?.name || 'Sin Ruta'
+
+      if (!accumulatedLoans.has(routeName)) {
+        accumulatedLoans.set(routeName, {
+          route_name: routeName,
+          collected: 0,
+          pending_collected: Number(loan.total_pending),
+          paid_installments: 0,
+          pending_installments: 0
+        })
+      }
+
+      const schedules = loan.payment_plan.payment_schedules
+      const totalPaid = schedules.reduce(
+        (sum, schedule) => sum + (Number(schedule.amount_paid) || 0),
+        0
+      )
+      const totalPending = schedules.reduce(
+        (sum, schedule) =>
+          sum +
+          (Number(schedule.amount_due) - (Number(schedule.amount_paid) || 0)),
+        0
+      )
+      const paidCount = schedules.filter((s) => s.status === 'paid').length
+      const pendingCount = schedules.filter(
+        (s) => s.status === 'pending'
+      ).length
+
+      const accumulated = accumulatedLoans.get(routeName)
+      accumulated.collected += totalPaid
+      accumulated.pending_collected += totalPending
+      accumulated.paid_installments += paidCount
+      accumulated.pending_installments += pendingCount
+    })
+
+    const result = Array.from(accumulatedLoans.values())
+
+    return handleSuccess(result)
+  } catch (error: any) {
+    console.error('Error fetching loans:', error)
     return handleError(error.message)
   }
 }
