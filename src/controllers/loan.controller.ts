@@ -235,7 +235,6 @@ export const getLoansByRouteUser = async ({
       return handleNotFound('Número de página o límite son valores inválidos')
     }
 
-    console.log({ dni })
     const loansRepository = AppDataSource.getRepository(Loan)
     const [loans] = await loansRepository.findAndCount({
       relations: { client: { route: true }, payment_plan: true },
