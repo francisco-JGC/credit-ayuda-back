@@ -38,6 +38,10 @@ export const createLoan = async (
       return handleNotFound('El cliente asignado al prestamos no existe')
     }
 
+    if (client.loans[client.loans.length - 1].status === 'active') {
+      return handleNotFound('El cliente tiene un prestamo activo actualmente')
+    }
+
     const newPaymentPlan = paymentPlanRepo.create({
       total_payments: Number(loan_info.total_payments),
       payments_remaining: Number(loan_info.total_payments),
