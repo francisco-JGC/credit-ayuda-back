@@ -176,9 +176,13 @@ export const updateUserById = async (
     if (!userExists) {
       return handleNotFound('Proveedor no encontrado')
     }
-
+    if (user.password) {
+      user.password = await hash(user.password, 10)
+    } else {
+      user.password = userExists.password
+    }
     // merge with the existing user
-    const updatedUser = await AppDataSource.getRepository(User).save({ ...user, password: userExists.password })
+    const updatedUser = await AppDataSource.getRepository(User).save(user)
     return handleSuccess(updatedUser)
   } catch (error: any) {
     return handleError(error.message)

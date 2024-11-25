@@ -27,4 +27,4 @@ export interface ILoginResponse {
   role: string
 }
 
-export type IUpdateUser = Omit<User, 'password' | 'created_at'>
+export type IUpdateUser = Omit<User, 'created_at'>

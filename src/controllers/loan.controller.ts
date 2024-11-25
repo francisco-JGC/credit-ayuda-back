@@ -92,6 +92,8 @@ export const updateLoan = async (loan: Loan) => {
       ...loan,
       total_pending: loanExist.total_recovered
     })
+    const hasBeenPaid = updatedLoan.total_pending === 0
+    updatedLoan.status = hasBeenPaid ? 'paid' : 'active'
     return handleSuccess(updatedLoan)
   } catch (error: any) {
     return handleError(error.message)
