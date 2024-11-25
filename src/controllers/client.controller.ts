@@ -191,7 +191,7 @@ export const getPaginationClient = async ({
         current_debt:
           client?.loans?.[client?.loans?.length - 1]?.total_pending || 0,
         route: client?.route?.name || '',
-        loan_status: client?.loans?.[client?.loans?.length - 1]?.status || ''
+        loan_status: client?.loans?.[0]?.status || ''
       }
     })
 

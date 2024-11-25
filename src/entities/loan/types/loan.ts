@@ -7,7 +7,18 @@ export interface ICreateLoan {
   total_payments: number
   payment_amount: number
   total_recovered: number
+
+  payment_schedule?: ICreatePaymentSchedule[]
 }
+
+export interface ICreatePaymentSchedule {
+  due_date: string
+  amount_due: string
+  amount_paid: string
+  status: PaymentStatus
+}
+
+export type PaymentStatus = 'paid' | 'pending' | 'late'
 
 export interface ILoanTable {
   id: number
@@ -20,6 +31,20 @@ export interface ILoanTable {
   status: 'active' | 'paid' | 'pending' | 'rejected'
 }
 
-export type LoanFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'yearly'
+export type LoanFrequency =
+  | 'daily'
+  | 'weekly'
+  | 'biweekly'
+  | 'monthly'
+  | 'yearly'
 
 export type LoanStatus = 'active' | 'paid' | 'pending' | 'rejected'
+
+export interface ICredit {
+  loan_id: number
+  route_name: string
+  collected: number
+  pending_collected: number
+  paid_installments: number
+  pending_installments: number
+}
