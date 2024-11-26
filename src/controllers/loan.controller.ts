@@ -1,4 +1,4 @@
-import { EntityManager, In, Like } from 'typeorm'
+import { EntityManager, ILike, In } from 'typeorm'
 import { AppDataSource } from '../config/database.config'
 import { Client } from '../entities/client/client.entity'
 import { Loan } from '../entities/loan/loan.entity'
@@ -201,7 +201,7 @@ export const getLoans = async ({
       order: { created_at: 'DESC' },
       where: {
         client: {
-          name: Like(`%${dni ?? ''}%`),
+          name: ILike(`%${dni ?? ''}%`),
           route: {
             name: route
           }
@@ -249,7 +249,7 @@ export const getLoansByRouteUser = async ({
       order: { created_at: 'DESC' },
       where: {
         client: {
-          name: Like(`%${dni ?? ''}%`),
+          name: ILike(`%${dni ?? ''}%`),
           route: {
             name: route
           }
@@ -299,7 +299,7 @@ export const getRequests = async ({
       order: { created_at: 'DESC' },
       where: {
         client: {
-          dni: Like(`%${dni ?? ''}%`),
+          dni: ILike(`%${dni ?? ''}%`),
           route: {
             name: route
           }
@@ -474,7 +474,7 @@ export const getFilteredDatesLoans = async ({
     const accumulatedLoans = new Map<string, any>()
 
     loans.forEach((loan) => {
-      if (!loan.payment_plan || !loan.payment_plan.payment_schedules) {
+      if (!loan.payment_plan?.payment_schedules) {
         console.warn(`Préstamo sin plan de pago o pagos: ${loan.id}`)
         return
       }
