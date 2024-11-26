@@ -522,3 +522,20 @@ export const getFilteredDatesLoans = async ({
     return handleError(error.message)
   }
 }
+
+export const getLoansByClientId = async (
+  clientId: number
+): Promise<IHandleResponseController<Loan[]>> => {
+  try {
+    const loanRepo = AppDataSource.getRepository(Loan)
+
+    const loans = await loanRepo.find({
+      where: { client: { id: clientId } },
+      relations: { client: { route: true }, payment_plan: true, penalty_plans: true }
+    })
+
+    return handleSuccess(loans)
+  } catch (error: any) {
+    return handleError(error.message)
+  }
+}
