@@ -4,6 +4,7 @@ import {
   getFilteredDatesLoans,
   getLoanById,
   getLoans,
+  getLoansByClientId,
   getLoansByRouteUser,
   getPaginationLoans,
   getRequests,
@@ -108,6 +109,16 @@ router.get(
         route
       })
     )
+  }
+)
+
+router.get(
+  '/client/:id',
+  isAuth,
+  authorizeRoles(['admin']),
+  async (req, res) => {
+    const clientId = Number(req.params.id)
+    return res.json(await getLoansByClientId(clientId))
   }
 )
 
