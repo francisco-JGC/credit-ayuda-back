@@ -34,3 +34,24 @@ export async function updatePaymentSchedule(
     return handleError('Error al actualizar el plan de pagos')
   }
 }
+
+export async function getPayment(id: number) {
+  const paymentScheduleRepo = AppDataSource.getRepository(PaymentSchedule)
+  try {
+    const payment = await paymentScheduleRepo.findOne({
+      where: { id },
+      relations: { payment_plan: { loan: { client: true } } }
+    })
+
+    if (!payment) {
+      return handleError('El pago no existe')
+    }
+
+    return handleSuccess(payment)
+  } catch (error) {
+    if (error instanceof Error) {
+      return handleError(error.message)
+    }
+    return handleError('Error al obtener el pago')
+  }
+}
