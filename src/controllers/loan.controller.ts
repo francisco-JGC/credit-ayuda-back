@@ -98,12 +98,11 @@ export const updateLoan = async (loan: Loan) => {
       return handleError('El prestamo no existe')
     }
 
-    const updatedLoan = await loanRepo.save({
-      ...loan,
-      total_pending: loanExist.total_recovered
-    })
-    const hasBeenPaid = updatedLoan.total_pending === 0
-    updatedLoan.status = hasBeenPaid ? 'paid' : 'active'
+    const hasBeenPaid = loan.total_pending === 0
+    if (hasBeenPaid) {
+      loan.status = 'paid'
+    }
+    const updatedLoan = await loanRepo.save(loan)
     return handleSuccess(updatedLoan)
   } catch (error: any) {
     return handleError(error.message)
@@ -195,7 +194,7 @@ export const getLoans = async ({
 
     const loansRepository = AppDataSource.getRepository(Loan)
     const [loans, loansCount] = await loansRepository.findAndCount({
-      relations: { client: { route: true }, payment_plan: true },
+      relations: { client: { route: true }, payment_plan: { payment_schedules: true } },
       skip: (page - 1) * limit,
       take: limit,
       order: { created_at: 'DESC' },
@@ -531,7 +530,7 @@ export const getLoansByClientId = async (
 
     const loans = await loanRepo.find({
       where: { client: { id: clientId } },
-      relations: { client: { route: true }, payment_plan: true, penalty_plans: true }
+      relations: { client: { route: true }, payment_plan: { payment_schedules: true }, penalty_plans: true }
     })
 
     return handleSuccess(loans)
