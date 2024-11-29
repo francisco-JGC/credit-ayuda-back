@@ -18,8 +18,6 @@ export async function updatePaymentSchedule(
       return handleError('El prestamo no existe')
     }
 
-    loan.total_pending -= newPaymentSchedule.amount_paid
-
     const entity = paymentScheduleRepo.create(newPaymentSchedule)
     const newEntity = await paymentScheduleRepo.save(entity)
 
