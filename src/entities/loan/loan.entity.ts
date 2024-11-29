@@ -44,7 +44,7 @@ export class Loan {
   })
   penalty_plans: PenaltyPlan[]
 
-  @ManyToOne(() => Client, (client) => client.loans, { eager: true })
+  @ManyToOne(() => Client, (client) => client.loans, { eager: true, onDelete: 'CASCADE' })
   client: Client
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })

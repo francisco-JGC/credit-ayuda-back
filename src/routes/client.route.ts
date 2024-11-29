@@ -22,8 +22,8 @@ router.post(
   }
 )
 
-router.post('/delete', async (req, res) => {
-  res.json(await deleteClientById(req.body.id))
+router.delete('/delete/:id', async (req, res) => {
+  res.json(await deleteClientById(Number(req.params.id)))
 })
 
 router.post('/update/:id', async (req, res) => {
