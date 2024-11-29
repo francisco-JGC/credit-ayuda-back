@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { PaymentPlan } from './paymentPlan.entity'
 
 @Entity('payment_schedule')
@@ -8,6 +8,9 @@ export class PaymentSchedule {
 
   @Column({ type: 'date' })
   due_date: Date
+
+  @Column({ type: 'timestamp', nullable: true })
+  paid_date: Date
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   amount_due: number
