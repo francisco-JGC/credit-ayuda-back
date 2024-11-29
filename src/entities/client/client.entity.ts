@@ -44,6 +44,6 @@ export class Client {
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date
 
-  @OneToMany(() => Loan, (loan) => loan.client)
+  @OneToMany(() => Loan, (loan) => loan.client, { onDelete: 'CASCADE' })
   loans: Loan[]
 }
