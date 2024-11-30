@@ -17,7 +17,6 @@ router.post(
   isAuth,
   authorizeRoles(['admin', 'inventory']),
   async (req, res) => {
-    console.log(req.body)
     return res.json(await createClient(req.body))
   }
 )
