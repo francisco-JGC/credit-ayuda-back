@@ -38,7 +38,7 @@ export const createLoan = async (
       return handleNotFound('El cliente asignado al prestamos no existe')
     }
 
-    if (client.loans[0]?.status === 'active') {
+    if (client.loans.some((loan) => loan.status === 'active')) {
       return handleNotFound('El cliente tiene un prestamo activo actualmente')
     }
 
