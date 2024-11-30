@@ -19,7 +19,7 @@ export class Route {
   @Column({ nullable: true })
   description?: string
 
-  @OneToMany(() => Client, (client) => client.route)
+  @OneToMany(() => Client, (client) => client.route, { onDelete: 'SET NULL' })
   client?: Client[]
 
   @OneToMany(() => Client, (client) => client.route)
