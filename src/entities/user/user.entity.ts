@@ -26,7 +26,7 @@ export class User {
   @JoinTable()
   roles: Role[]
 
-  @ManyToOne(() => Route, (route) => route.user)
+  @ManyToOne(() => Route, (route) => route.user, { onDelete: 'SET NULL' })
   @JoinColumn()
   route?: Route
 
