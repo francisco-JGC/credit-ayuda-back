@@ -16,8 +16,11 @@ export class PenaltyPlan {
   @Column({ type: 'decimal' })
   total_penalty_amount: number
 
+  @Column({ type: 'decimal' })
+  interest_rate: number
+
   @Column({ type: 'varchar', length: 50 })
-  status: string
+  status: 'paid' | 'pending' | 'unpaid'
 
   @ManyToOne(() => Loan, (loan) => loan.penalty_plans)
   loan: Loan
