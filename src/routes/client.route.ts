@@ -43,7 +43,7 @@ router.get(
   authorizeRoles(['admin']),
   async (req, res) => {
     const { page, limit, filter } = req.params
-
+    const { route } = req.query
     const pageNumber = parseInt(page, 10)
     const limitNumber = parseInt(limit, 10)
 
@@ -51,7 +51,8 @@ router.get(
       await getPaginationClient({
         page: pageNumber,
         limit: limitNumber,
-        filter
+        filter,
+        route: route as string | undefined
       })
     )
   }
