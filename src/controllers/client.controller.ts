@@ -154,11 +154,16 @@ export const assignRouteToClient = async ({
   }
 }
 
+interface IGetClients extends IPagination {
+  route?: string
+}
+
 export const getPaginationClient = async ({
   filter,
   page,
-  limit
-}: IPagination): Promise<
+  limit,
+  route
+}: IGetClients): Promise<
   IHandleResponseController<IPaginationResponse<IClientTable[]>>
 > => {
   try {
@@ -166,8 +171,8 @@ export const getPaginationClient = async ({
       return handleNotFound('Numero de pagina o limite son valores invalidos')
     }
 
-    const clients = await AppDataSource.getRepository(Client).find({
-      where: { dni: ILike(`%${filter || ''}%`) },
+    const [clients, totalClients] = await AppDataSource.getRepository(Client).findAndCount({
+      where: { dni: ILike(`%${filter || ''}%`), route: { name: route } },
       relations: [
         'route',
         'loans',
@@ -195,12 +200,10 @@ export const getPaginationClient = async ({
       }
     })
 
-    const total_data = (await AppDataSource.getRepository(Client).find()).length
-
     return handleSuccess({
       data: clientTables,
-      total_data,
-      total_page: Math.ceil(total_data / limit),
+      total_data: totalClients,
+      total_page: Math.ceil(totalClients / limit),
       page,
       limit
     })
