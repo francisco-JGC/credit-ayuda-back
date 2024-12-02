@@ -1,16 +1,15 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  OneToOne,
+  CreateDateColumn,
+  Entity,
   JoinColumn,
-  OneToMany,
   ManyToOne,
-  CreateDateColumn
+  OneToOne,
+  PrimaryGeneratedColumn
 } from 'typeorm'
-import { PaymentPlan } from './paymentPlan.entity'
-import { PenaltyPlan } from '../penalty/penaltyPlan.entity'
 import { Client } from '../client/client.entity'
+import { PenaltyPlan } from '../penalty/penaltyPlan.entity'
+import { PaymentPlan } from './paymentPlan.entity'
 
 @Entity('loan')
 export class Loan {
@@ -39,10 +38,10 @@ export class Loan {
   @JoinColumn()
   payment_plan: PaymentPlan
 
-  @OneToMany(() => PenaltyPlan, (penaltyPlan) => penaltyPlan.loan, {
+  @OneToOne(() => PenaltyPlan, (plan) => plan.loan, {
     cascade: true
   })
-  penalty_plans: PenaltyPlan[]
+  penalty_plan: PenaltyPlan
 
   @ManyToOne(() => Client, (client) => client.loans, { eager: true, onDelete: 'CASCADE' })
   client: Client
