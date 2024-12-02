@@ -17,6 +17,9 @@ export class PenaltyPlan {
   @Column({ type: 'decimal' })
   total_penalty_amount: number
 
+  @Column({ type: 'decimal', nullable: true })
+  current_penalty_amount: number
+
   @Column({ type: 'decimal' })
   interest_rate: number
 
@@ -33,4 +36,7 @@ export class PenaltyPlan {
     { cascade: true }
   )
   penalty_payment_schedules: PenaltyPaymentSchedule[]
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date
 }
