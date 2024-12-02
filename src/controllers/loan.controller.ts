@@ -57,7 +57,7 @@ export const createLoan = async (
       interest_rate: Number(loan_info.interest_rate),
       status: 'pending',
       total_recovered: loan_info.total_recovered,
-      total_pending: 0
+      total_pending: loan_info.total_recovered
     })
 
     const createdLoan = await loanRepo.save(newLoan)
@@ -194,7 +194,7 @@ export const getLoans = async ({
 
     const loansRepository = AppDataSource.getRepository(Loan)
     const [loans, loansCount] = await loansRepository.findAndCount({
-      relations: { client: { route: true }, payment_plan: { payment_schedules: true } },
+      relations: { client: { route: true }, payment_plan: { payment_schedules: true }, penalty_plan: true },
       skip: (page - 1) * limit,
       take: limit,
       order: { created_at: 'DESC' },
@@ -345,9 +345,9 @@ export const getPaginationLoans = async ({
       .leftJoinAndSelect('client.loans', 'loans')
       .leftJoinAndSelect('loans.payment_plan', 'payment_plan')
       .leftJoinAndSelect('payment_plan.payment_schedules', 'payment_schedules')
-      .leftJoinAndSelect('loans.penalty_plans', 'penalty_plans')
+      .leftJoinAndSelect('loans.penalty_plan', 'penalty_plan')
       .leftJoinAndSelect(
-        'penalty_plans.penalty_payment_schedules',
+        'penalty_plan.penalty_payment_schedules',
         'penalty_payment_schedules'
       )
       .where('client.dni ILIKE :filter', {
@@ -399,8 +399,8 @@ export const getLoanById = async (
         'client.route',
         'payment_plan',
         'payment_plan.payment_schedules',
-        'penalty_plans',
-        'penalty_plans.penalty_payment_schedules'
+        'penalty_plan',
+        'penalty_plan.penalty_payment_schedules'
       ],
       order: {
         payment_plan: {
@@ -530,7 +530,7 @@ export const getLoansByClientId = async (
 
     const loans = await loanRepo.find({
       where: { client: { id: clientId } },
-      relations: { client: { route: true }, payment_plan: { payment_schedules: true }, penalty_plans: true }
+      relations: { client: { route: true }, payment_plan: { payment_schedules: true }, penalty_plan: true }
     })
 
     return handleSuccess(loans)
