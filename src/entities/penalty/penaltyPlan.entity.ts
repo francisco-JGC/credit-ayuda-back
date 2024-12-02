@@ -1,9 +1,10 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  OneToMany
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn
 } from 'typeorm'
 import { Loan } from '../loan/loan.entity'
 import { PenaltyPaymentSchedule } from './penaltySchedule.entity'
@@ -22,7 +23,8 @@ export class PenaltyPlan {
   @Column({ type: 'varchar', length: 50 })
   status: 'paid' | 'pending' | 'unpaid'
 
-  @ManyToOne(() => Loan, (loan) => loan.penalty_plans)
+  @OneToOne(() => Loan, (loan) => loan.penalty_plan)
+  @JoinColumn()
   loan: Loan
 
   @OneToMany(
