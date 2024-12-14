@@ -9,7 +9,11 @@ import { createDefaultRoles } from './controllers/initializers/role.initializer'
 
 const app = express()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: '*'
+  })
+)
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
