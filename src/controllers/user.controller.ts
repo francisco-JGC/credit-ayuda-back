@@ -24,7 +24,7 @@ export const createUser = async ({
   roles,
   route
 }: ICreateUser): Promise<IHandleResponseController<IResponseUser>> => {
-  if (!username || !password || roles.length === 0) {
+  if (!username || !password || roles?.length === 0) {
     return {
       message: 'Todos los campos son requeridos',
       success: false
@@ -53,7 +53,7 @@ export const createUser = async ({
     const user = new User()
     user.username = username
     user.password = await hash(password, 10)
-    user.roles = roles
+    user.roles = roles || []
     user.route = route
 
     const newUser = await AppDataSource.getRepository(User).save(user)

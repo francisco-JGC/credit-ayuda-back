@@ -11,7 +11,7 @@ export interface IResponseUser {
 export interface ICreateUser {
   username: string
   password: string
-  roles: Role[]
+  roles?: Role[]
   route?: Route
 }
 
