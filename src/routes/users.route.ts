@@ -30,7 +30,7 @@ router.get('/username/:username', async (req, res) => {
 router.post(
   '/create',
   isAuth,
-  authorizeRoles(['admin', 'inventory']),
+  authorizeRoles(['admin']),
   async (req, res) => {
     return res.json(await createUser(req.body))
   }

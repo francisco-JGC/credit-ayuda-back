@@ -1,4 +1,5 @@
 import type { Role } from '../../role/role.entity'
+import { Route } from '../../route/route.entity'
 import { User } from '../user.entity'
 
 export interface IResponseUser {
@@ -10,6 +11,8 @@ export interface IResponseUser {
 export interface ICreateUser {
   username: string
   password: string
+  roles: Role[]
+  route?: Route
 }
 
 export interface IFindUserByUsername {
