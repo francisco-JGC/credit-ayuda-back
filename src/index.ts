@@ -19,14 +19,16 @@ app.use(
 
 const port = process.env.PORT || 3001
 
-fs.readdirSync(path.join(__dirname, 'routes')).map(async (file) => {
-  const { default: route } = await import(`./routes/${file}`)
-  const [routeName] = file.split('.')
-  app.use(`/api/${routeName}`, route)
-})
-
 async function main() {
   try {
+    const routeFiles = fs.readdirSync(path.join(__dirname, 'routes'))
+
+    for (const file of routeFiles) {
+      const { default: route } = await import(`./routes/${file}`)
+      const [routeName] = file.split('.')
+      app.use(`/api/${routeName}`, route)
+    }
+
     await AppDataSource.initialize()
     await runInitializers()
 
