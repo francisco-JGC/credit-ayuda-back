@@ -49,7 +49,7 @@ export const login = async ({
         role: user?.roles[0]?.name || '',
         route_name: user?.route?.name || ''
       },
-      process.env.JWT_SECRET as string,
+      process.env.JWT_SECRET!,
       { expiresIn: '1d' }
     )
 
@@ -71,9 +71,11 @@ export const login = async ({
 
 export const register = async ({
   username,
-  password
+  password,
+  roles,
+  route
 }: ICreateUser): Promise<IHandleResponseController<ILoginResponse>> => {
-  const user = await createUser({ username, password })
+  const user = await createUser({ username, password, roles, route })
 
   if (!user.success) {
     return {

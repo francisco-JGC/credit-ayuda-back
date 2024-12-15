@@ -3,6 +3,8 @@ import { AppDataSource } from '../../config/database.config'
 import { getRoleByName } from '../role.controller'
 import { assignRoleToUser, createUser } from '../user.controller'
 import { handleError, handleSuccess } from '../types'
+import { ICreateUser } from '../../entities/user/types'
+import { Role } from '../../entities/role/role.entity'
 
 export const createDefaultUsers = async () => {
   try {
@@ -20,10 +22,16 @@ export const createDefaultUsers = async () => {
       })
 
       if (!userExist) {
-        const role = await getRoleByName(user.rolename)
+        const roleResponse = await getRoleByName(user.rolename)
 
-        if (role.success) {
-          const createdUser = await createUser({ ...user })
+        if (roleResponse.success) {
+          const role = roleResponse.data as Role
+          const newUser: ICreateUser = {
+            password: user.password,
+            username: user.username,
+            roles: [role]
+          }
+          const createdUser = await createUser(newUser)
           if (createdUser.success) {
             await assignRoleToUser({
               userId: createdUser.data?.id || -1,
