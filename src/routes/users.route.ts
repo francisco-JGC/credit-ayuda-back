@@ -16,13 +16,13 @@ const router = Router()
 router.get(
   '/',
   isAuth,
-  authorizeRoles(['admin', 'seller']),
+  authorizeRoles(['admin']),
   async (_req, res) => {
     return res.json(await getAllUsers())
   }
 )
 
-router.get('/username/:username', async (req, res) => {
+router.get('/username/:username', isAuth, authorizeRoles(['admin']), async (req, res) => {
   const username = req.params.username
   res.json(await findUserByUsername({ username }))
 })
@@ -36,15 +36,15 @@ router.post(
   }
 )
 
-router.post('/update/:id', async (req, res) => {
+router.post('/update/:id', isAuth, authorizeRoles(['admin']), async (req, res) => {
   res.json(await updateUserById(req.body, Number(req.params.id)))
 })
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', isAuth, authorizeRoles(['admin']), async (req, res) => {
   res.json(await deleteUserById(req.body.id))
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', isAuth, authorizeRoles(['admin']), async (req, res) => {
   res.json(await getUserById(Number(req.params.id)))
 })
 

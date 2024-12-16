@@ -8,7 +8,7 @@ const router = Router()
 router.get(
   '/',
   isAuth,
-  authorizeRoles(['admin', 'seller', 'inventory']),
+  authorizeRoles(['admin', 'collector']),
   async (_req, res) => {
     res.json(await getAllRoles())
   }

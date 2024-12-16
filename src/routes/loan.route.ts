@@ -19,7 +19,7 @@ const router = Router()
 router.post(
   '/create',
   isAuth,
-  authorizeRoles(['admin', 'inventory']),
+  authorizeRoles(['admin', 'collector']),
   async (req, res) => {
     return res.json(await createLoan(req.body))
   }
@@ -28,7 +28,7 @@ router.post(
 router.get(
   '/:id',
   isAuth,
-  authorizeRoles(['admin', 'inventory']),
+  authorizeRoles(['admin', 'collector']),
   async (req, res) => {
     return res.json(await getLoanById(Number(req.params.id)))
   }
@@ -37,7 +37,7 @@ router.get(
 router.get(
   '/full/:page/:limit/:filter?',
   isAuth,
-  authorizeRoles(['admin']),
+  authorizeRoles(['admin', 'collector']),
   async (req, res) => {
     const { page, limit, filter } = req.params
     const pageNumber = parseInt(page, 10)
@@ -64,7 +64,7 @@ router.get(
 router.get(
   '/my-route/full/:page/:limit/:filter?',
   isAuth,
-  authorizeRoles(['admin']),
+  authorizeRoles(['admin', 'collector']),
   async (req: any, res) => {
     const { page, limit, filter } = req.params
     const pageNumber = parseInt(page, 10)
@@ -92,7 +92,7 @@ router.get(
 router.get(
   '/requests/:page/:limit/:filter?',
   isAuth,
-  authorizeRoles(['admin']),
+  authorizeRoles(['admin', 'collector']),
   async (req, res) => {
     const { page, limit, filter } = req.params
     const pageNumber = parseInt(page, 10)
@@ -115,7 +115,7 @@ router.get(
 router.get(
   '/client/:id',
   isAuth,
-  authorizeRoles(['admin']),
+  authorizeRoles(['admin', 'collector']),
   async (req, res) => {
     const clientId = Number(req.params.id)
     return res.json(await getLoansByClientId(clientId))
@@ -125,7 +125,7 @@ router.get(
 router.get(
   '/:page/:limit/:filter?',
   isAuth,
-  authorizeRoles(['admin']),
+  authorizeRoles(['admin', 'collector']),
   async (req, res) => {
     const { page, limit, filter } = req.params
 
@@ -142,14 +142,14 @@ router.get(
   }
 )
 
-router.put('/update', isAuth, authorizeRoles(['admin']), async (req, res) => {
+router.put('/update', isAuth, authorizeRoles(['admin', 'collector']), async (req, res) => {
   return res.json(await updateLoan(req.body))
 })
 
 router.get(
   '/filter-type/:filterType/date/:date',
   isAuth,
-  authorizeRoles(['admin']),
+  authorizeRoles(['admin', 'collector']),
   async (req, res) => {
     return res.json(
       await getFilteredDatesLoans({

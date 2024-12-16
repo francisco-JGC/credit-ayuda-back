@@ -15,7 +15,7 @@ const router = Router()
 router.post(
   '/create',
   isAuth,
-  authorizeRoles(['admin', 'inventory']),
+  authorizeRoles(['admin']),
   async (req, res) => {
     return res.json(await createRoute(req.body))
   }
@@ -24,7 +24,7 @@ router.post(
 router.get(
   '/delete/:id',
   isAuth,
-  authorizeRoles(['admin', 'inventory']),
+  authorizeRoles(['admin']),
   async (req, res) => {
     return res.json(await deleteRouteById(Number(req.params.id)))
   }
@@ -33,7 +33,7 @@ router.get(
 router.get(
   '/',
   isAuth,
-  authorizeRoles(['admin', 'inventory']),
+  authorizeRoles(['admin']),
   async (_req, res) => {
     return res.json(await getAllRoutes())
   }
@@ -42,7 +42,7 @@ router.get(
 router.get(
   '/:id',
   isAuth,
-  authorizeRoles(['admin', 'inventory']),
+  authorizeRoles(['admin']),
   async (req, res) => {
     return res.json(await getRouteById(Number(req.params.id)))
   }
@@ -51,7 +51,7 @@ router.get(
 router.post(
   '/update',
   isAuth,
-  authorizeRoles(['admin', 'inventory']),
+  authorizeRoles(['admin']),
   async (req, res) => {
     return res.json(await updateRouteById(req.body))
   }

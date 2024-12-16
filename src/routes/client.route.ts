@@ -15,25 +15,25 @@ const router = Router()
 router.post(
   '/create',
   isAuth,
-  authorizeRoles(['admin', 'inventory']),
+  authorizeRoles(['admin']),
   async (req, res) => {
     return res.json(await createClient(req.body))
   }
 )
 
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', isAuth, authorizeRoles(['admin']), async (req, res) => {
   res.json(await deleteClientById(Number(req.params.id)))
 })
 
-router.post('/update/:id', async (req, res) => {
+router.post('/update/:id', isAuth, authorizeRoles(['admin']), async (req, res) => {
   res.json(await updateClientById(req.body, Number(req.params.id)))
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', isAuth, authorizeRoles(['admin']), async (req, res) => {
   res.json(await getClientById(Number(req.params.id)))
 })
 
-router.get('/dni/:dni', async (req, res) => {
+router.get('/dni/:dni', isAuth, authorizeRoles(['admin']), async (req, res) => {
   res.json(await getClientByDni(req.params.dni))
 })
 

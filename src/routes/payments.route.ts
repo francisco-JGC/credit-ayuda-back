@@ -5,12 +5,12 @@ import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
 
 const router = Router()
 
-router.get('/:id', isAuth, authorizeRoles(['admin']), async (req, res) => {
+router.get('/:id', isAuth, authorizeRoles(['admin', 'collector']), async (req, res) => {
   const id = parseInt(req.params.id)
   return res.json(await getPayment(id))
 })
 
-router.post('/update/', isAuth, authorizeRoles(['admin', 'inventory']), async (req, res) => {
+router.post('/update/', isAuth, authorizeRoles(['admin', 'collector']), async (req, res) => {
   return res.json(await updatePaymentSchedule(req.body))
 })
 
