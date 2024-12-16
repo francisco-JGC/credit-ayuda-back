@@ -298,7 +298,7 @@ export const getRequests = async ({
       order: { created_at: 'DESC' },
       where: {
         client: {
-          dni: ILike(`%${dni ?? ''}%`),
+          name: ILike(`%${dni ?? ''}%`),
           route: {
             name: route
           }
