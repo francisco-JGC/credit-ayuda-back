@@ -6,8 +6,10 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn
 } from 'typeorm'
+import { Register } from '../register/register.entity'
 import { Role } from '../role/role.entity'
 import { Route } from '../route/route.entity'
 
@@ -29,6 +31,9 @@ export class User {
   @ManyToOne(() => Route, (route) => route.user, { onDelete: 'SET NULL' })
   @JoinColumn()
   route?: Route
+
+  @OneToMany(() => Register, (register) => register.user, { onDelete: 'SET NULL' })
+  registers: Register[]
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date
