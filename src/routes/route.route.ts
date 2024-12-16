@@ -33,7 +33,7 @@ router.get(
 router.get(
   '/',
   isAuth,
-  authorizeRoles(['admin']),
+  authorizeRoles(['admin', 'collector']),
   async (_req, res) => {
     return res.json(await getAllRoutes())
   }

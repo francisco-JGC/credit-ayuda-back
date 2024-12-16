@@ -22,7 +22,7 @@ router.get(
   }
 )
 
-router.get('/username/:username', isAuth, authorizeRoles(['admin']), async (req, res) => {
+router.get('/username/:username', isAuth, authorizeRoles(['admin', 'collector']), async (req, res) => {
   const username = req.params.username
   res.json(await findUserByUsername({ username }))
 })
