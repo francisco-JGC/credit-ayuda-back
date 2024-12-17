@@ -6,8 +6,8 @@ export class Register {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'enum', enum: ['income', 'withdraw', 'loan', 'savings', 'cash'], default: 'income' })
-  type: 'income' | 'withdraw' | 'loan' | 'savings' | 'cash'
+  @Column({ type: 'enum', enum: ['income', 'withdraw', 'loan', 'savings', 'cash', 'expenses'], default: 'income' })
+  type: 'income' | 'withdraw' | 'loan' | 'savings' | 'cash' | 'expenses'
 
   @Column({ nullable: true, type: 'text' })
   details?: string

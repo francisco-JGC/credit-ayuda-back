@@ -3,6 +3,22 @@ import { AppDataSource } from '../config/database.config'
 import { Register } from '../entities/register/register.entity'
 import { handleError, handleSuccess } from './types'
 
+export async function getLastRegister() {
+  try {
+    const register = await AppDataSource.getRepository(Register).findOne({
+      order: {
+        created_at: 'DESC'
+      }
+    })
+    return handleSuccess(register)
+  } catch (error) {
+    if (error instanceof Error) {
+      return handleError(error.message)
+    }
+    return handleError('Error al obtener el último registro')
+  }
+}
+
 export async function getAllRegisters() {
   try {
     const registersRepository = AppDataSource.getRepository(Register)
