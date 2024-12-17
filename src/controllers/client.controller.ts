@@ -181,8 +181,8 @@ export const getPaginationClient = async ({
         'loans.penalty_plan',
         'loans.penalty_plan.penalty_payment_schedules'
       ],
-      skip: (page - 1) * limit,
-      take: limit,
+      // skip: (page - 1) * limit,
+      // take: limit,
       order: { created_at: 'DESC' }
     })
 

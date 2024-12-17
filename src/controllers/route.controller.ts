@@ -79,9 +79,9 @@ export const getPaginationRoutes = async ({
     }
 
     const routes = await AppDataSource.getRepository(Route).find({
-      where: { name: ILike(`%${filter ? filter : ''}%`) },
-      skip: (page - 1) * limit,
-      take: limit,
+      where: { name: ILike(`%${filter || ''}%`) },
+      // skip: (page - 1) * limit,
+      // take: limit,
       order: { created_at: 'DESC' }
     })
 
