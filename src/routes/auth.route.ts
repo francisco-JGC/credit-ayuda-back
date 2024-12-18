@@ -5,7 +5,6 @@ const router = Router()
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body
-
   const responseLogin = await login({ username, password })
 
   return res.json(responseLogin)
