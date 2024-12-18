@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { isAuth } from '../middlewares/isAuth.middleware'
-import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
+import { authorizeRoles, isAllowedTime } from '../middlewares/authorizeRoles.middleware'
 import {
   createClient,
   deleteClientById,
@@ -11,7 +11,7 @@ import {
 } from '../controllers/client.controller'
 
 const router = Router()
-
+router.use(isAllowedTime())
 router.post(
   '/create',
   isAuth,
@@ -57,4 +57,5 @@ router.get(
     )
   }
 )
+
 export default router

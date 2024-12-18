@@ -1,10 +1,10 @@
 import { Router } from 'express'
 import { createRegister, getAllRegisters, updateRegister } from '../controllers/registers.controller'
 import { isAuth } from '../middlewares/isAuth.middleware'
-import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
+import { authorizeRoles, isAllowedTime } from '../middlewares/authorizeRoles.middleware'
 
 const router = Router()
-
+router.use(isAllowedTime())
 router.get('/', isAuth, authorizeRoles(['admin']), async (_, res) => {
   return res.json(await getAllRegisters())
 })

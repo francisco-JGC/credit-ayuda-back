@@ -1,10 +1,10 @@
 import { Router } from 'express'
 import { isAuth } from '../middlewares/isAuth.middleware'
 import { getAllRoles } from '../controllers/role.controller'
-import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
+import { authorizeRoles, isAllowedTime } from '../middlewares/authorizeRoles.middleware'
 
 const router = Router()
-
+router.use(isAllowedTime())
 router.get(
   '/',
   isAuth,

@@ -9,10 +9,10 @@ import {
   findUserByUsername
 } from '../controllers/user.controller'
 import { isAuth } from '../middlewares/isAuth.middleware'
-import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
+import { authorizeRoles, isAllowedTime } from '../middlewares/authorizeRoles.middleware'
 
 const router = Router()
-
+router.use(isAllowedTime())
 router.get(
   '/',
   isAuth,

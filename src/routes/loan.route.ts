@@ -11,11 +11,11 @@ import {
   updateLoan
 } from '../controllers/loan.controller'
 import { LoanFrequency, LoanStatus } from '../entities/loan/types/loan'
-import { authorizeRoles } from '../middlewares/authorizeRoles.middleware'
+import { authorizeRoles, isAllowedTime } from '../middlewares/authorizeRoles.middleware'
 import { isAuth } from '../middlewares/isAuth.middleware'
 
 const router = Router()
-
+router.use(isAllowedTime())
 router.post(
   '/create',
   isAuth,
