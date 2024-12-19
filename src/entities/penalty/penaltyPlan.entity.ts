@@ -4,7 +4,7 @@ import {
   JoinColumn,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn, Relation
 } from 'typeorm'
 import { Loan } from '../loan/loan.entity'
 import { PenaltyPaymentSchedule } from './penaltySchedule.entity'
@@ -28,14 +28,14 @@ export class PenaltyPlan {
 
   @OneToOne(() => Loan, (loan) => loan.penalty_plan)
   @JoinColumn()
-  loan: Loan
+  loan: Relation<Loan>
 
   @OneToMany(
     () => PenaltyPaymentSchedule,
     (penaltyPaymentSchedule) => penaltyPaymentSchedule.penalty_plan,
     { cascade: true }
   )
-  penalty_payment_schedules: PenaltyPaymentSchedule[]
+  penalty_payment_schedules: Relation<PenaltyPaymentSchedule[]>
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date
