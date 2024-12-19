@@ -1,7 +1,7 @@
-import { CreateRegister } from '../entities/register/types'
+import { CreateRegister } from '../entities/register/types/types'
 import { AppDataSource } from '../config/database.config'
 import { Register } from '../entities/register/register.entity'
-import { handleError, handleSuccess } from './types'
+import { handleError, handleSuccess } from './types/types'
 
 export async function getLastRegister() {
   try {
@@ -38,7 +38,8 @@ export async function getAllRegisters() {
 
 export async function createRegister(register: CreateRegister) {
   try {
-    const savedRegister = await AppDataSource.getRepository(Register).save(register)
+    const savedRegister =
+      await AppDataSource.getRepository(Register).save(register)
     return handleSuccess(savedRegister)
   } catch (error) {
     if (error instanceof Error) {
@@ -51,7 +52,8 @@ export async function createRegister(register: CreateRegister) {
 
 export async function updateRegister(register: Register) {
   try {
-    const updatedRegister = await AppDataSource.getRepository(Register).save(register)
+    const updatedRegister =
+      await AppDataSource.getRepository(Register).save(register)
     return handleSuccess(updatedRegister)
   } catch (error) {
     if (error instanceof Error) {

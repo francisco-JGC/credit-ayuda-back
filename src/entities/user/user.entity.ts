@@ -32,7 +32,9 @@ export class User {
   @JoinColumn()
   route?: Route
 
-  @OneToMany(() => Register, (register) => register.user, { onDelete: 'SET NULL' })
+  @OneToMany(() => Register, (register) => register.user, {
+    onDelete: 'SET NULL'
+  })
   registers: Register[]
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })

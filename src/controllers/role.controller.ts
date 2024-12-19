@@ -1,7 +1,11 @@
 import { AppDataSource } from '../config/database.config'
 import { Role } from '../entities/role/role.entity'
-import { IRoleResponse } from '../entities/role/types'
-import { handleError, handleSuccess, IHandleResponseController } from './types'
+import { IRoleResponse } from '../entities/role/types/types'
+import {
+  handleError,
+  handleSuccess,
+  IHandleResponseController
+} from './types/types'
 
 export const getRoleByName = async (
   role_name: string

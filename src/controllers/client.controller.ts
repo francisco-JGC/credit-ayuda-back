@@ -6,8 +6,8 @@ import {
   IPagination,
   IPaginationResponse,
   type IHandleResponseController
-} from './types'
-import { IClientTable, ICreateClient } from '../entities/client/types'
+} from './types/types'
+import { IClientTable, ICreateClient } from '../entities/client/types/types'
 import { Client } from '../entities/client/client.entity'
 import { getRouteByName } from './route.controller'
 import { Route } from '../entities/route/route.entity'
@@ -171,7 +171,9 @@ export const getPaginationClient = async ({
       return handleNotFound('Numero de pagina o limite son valores invalidos')
     }
 
-    const [clients, totalClients] = await AppDataSource.getRepository(Client).findAndCount({
+    const [clients, totalClients] = await AppDataSource.getRepository(
+      Client
+    ).findAndCount({
       where: { dni: ILike(`%${filter || ''}%`), route: { name: route } },
       relations: [
         'route',

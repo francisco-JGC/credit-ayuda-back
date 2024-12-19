@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Relation
+} from 'typeorm'
 import { PaymentPlan } from './paymentPlan.entity'
 
 @Entity('payment_schedule')
@@ -22,5 +28,5 @@ export class PaymentSchedule {
   status: 'pending' | 'paid' | 'late'
 
   @ManyToOne(() => PaymentPlan, (paymentPlan) => paymentPlan.payment_schedules)
-  payment_plan: PaymentPlan
+  payment_plan: Relation<PaymentPlan>
 }
