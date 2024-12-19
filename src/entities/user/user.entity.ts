@@ -31,16 +31,12 @@ export class User {
 
   @ManyToOne(() => Route, (route) => route.user, { onDelete: 'SET NULL' })
   @JoinColumn()
-  route?: Route
+  route?: Relation<Route>
 
   @OneToMany(() => Register, (register) => register.user, {
     onDelete: 'SET NULL'
   })
   registers: Register[]
-  @OneToMany(() => Register, (register) => register.user, {
-    onDelete: 'SET NULL'
-  })
-  registers: Relation<Register[]>
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date
