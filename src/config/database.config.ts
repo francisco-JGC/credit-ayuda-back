@@ -10,5 +10,8 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   // logging: true,
   synchronize: true,
-  entities: ['src/entities/**/*.entity.ts']
+  entities:
+    process.env.NODE_ENV === 'production'
+      ? ['build/entities/**/*.entity.js']
+      : ['src/entities/**/*.entity.ts']
 })

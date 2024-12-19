@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  Relation
+} from 'typeorm'
 import { PenaltyPlan } from './penaltyPlan.entity'
 
 @Entity()
@@ -22,5 +28,5 @@ export class PenaltyPaymentSchedule {
     () => PenaltyPlan,
     (penaltyPlan) => penaltyPlan.penalty_payment_schedules
   )
-  penalty_plan: PenaltyPlan
+  penalty_plan: Relation<PenaltyPlan>
 }

@@ -1,7 +1,7 @@
 import { AppDataSource } from '../config/database.config'
 import { PenaltyPlan } from '../entities/penalty/penaltyPlan.entity'
 import { PenaltyPaymentSchedule } from '../entities/penalty/penaltySchedule.entity'
-import { handleError, handleSuccess } from './types'
+import { handleError, handleSuccess } from './types/types'
 
 export async function createPenaltyPlan(plan: PenaltyPlan) {
   try {
@@ -52,7 +52,10 @@ export async function getPenaltyPlans() {
   }
 }
 
-export async function addPenaltyPayment(id: number, penaltyPayment: PenaltyPaymentSchedule) {
+export async function addPenaltyPayment(
+  id: number,
+  penaltyPayment: PenaltyPaymentSchedule
+) {
   try {
     const penaltyPlan = await AppDataSource.getRepository(PenaltyPlan).findOne({
       where: { id },

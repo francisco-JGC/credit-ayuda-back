@@ -1,4 +1,4 @@
-import { sign } from 'jsonwebtoken'
+import * as pkg from 'jsonwebtoken'
 import { compare } from 'bcrypt'
 import { User } from '../entities/user/user.entity'
 import { AppDataSource } from '../config/database.config'
@@ -7,8 +7,9 @@ import type {
   ICreateUser,
   ILogin,
   ILoginResponse
-} from '../entities/user/types'
-import { handleSuccess, type IHandleResponseController } from './types'
+} from '../entities/user/types/types'
+import { handleSuccess, type IHandleResponseController } from './types/types'
+const { sign } = pkg
 
 export const login = async ({
   username,

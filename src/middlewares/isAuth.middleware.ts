@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import { Response, Request, NextFunction } from 'express'
-import { verify, JsonWebTokenError } from 'jsonwebtoken'
+import * as pkg from 'jsonwebtoken'
+const { verify, JsonWebTokenError } = pkg
 
 export const isAuth = async (
   req: Request,

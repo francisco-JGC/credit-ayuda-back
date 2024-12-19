@@ -6,9 +6,9 @@ import {
   IPagination,
   IPaginationResponse,
   type IHandleResponseController
-} from './types'
+} from './types/types'
 import { Route } from '../entities/route/route.entity'
-import { ICreateRoute } from '../entities/route/types'
+import { ICreateRoute } from '../entities/route/types/types'
 import { ILike } from 'typeorm'
 import { Client } from '../entities/client/client.entity'
 

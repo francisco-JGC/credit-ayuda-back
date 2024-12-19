@@ -2,8 +2,8 @@ import { User } from '../../entities/user/user.entity'
 import { AppDataSource } from '../../config/database.config'
 import { getRoleByName } from '../role.controller'
 import { assignRoleToUser, createUser } from '../user.controller'
-import { handleError, handleSuccess } from '../types'
-import { ICreateUser } from '../../entities/user/types'
+import { handleError, handleSuccess } from '../types/types'
+import { ICreateUser } from '../../entities/user/types/types'
 import { Role } from '../../entities/role/role.entity'
 
 export const createDefaultUsers = async () => {
@@ -37,7 +37,7 @@ export const createDefaultUsers = async () => {
               userId: createdUser.data?.id || -1,
               role_name: user.rolename
             })
-}
+          }
         }
       }
     }
