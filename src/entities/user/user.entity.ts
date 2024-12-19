@@ -7,7 +7,8 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn, Relation
+  PrimaryGeneratedColumn,
+  Relation
 } from 'typeorm'
 import { Register } from '../register/register.entity'
 import { Role } from '../role/role.entity'
@@ -32,7 +33,13 @@ export class User {
   @JoinColumn()
   route?: Route
 
-  @OneToMany(() => Register, (register) => register.user, { onDelete: 'SET NULL' })
+  @OneToMany(() => Register, (register) => register.user, {
+    onDelete: 'SET NULL'
+  })
+  registers: Register[]
+  @OneToMany(() => Register, (register) => register.user, {
+    onDelete: 'SET NULL'
+  })
   registers: Relation<Register[]>
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })

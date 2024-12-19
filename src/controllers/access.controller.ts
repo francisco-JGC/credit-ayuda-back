@@ -1,4 +1,4 @@
-import { handleSuccess, IHandleResponseController } from './types'
+import { handleSuccess, IHandleResponseController } from './types/types'
 import { format, toZonedTime } from 'date-fns-tz'
 
 export const isAllowedAccess = async (

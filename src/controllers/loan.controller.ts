@@ -19,7 +19,7 @@ import {
   IPagination,
   IPaginationResponse,
   type IHandleResponseController
-} from './types'
+} from './types/types'
 
 export const createLoan = async (
   loan_info: ICreateLoan

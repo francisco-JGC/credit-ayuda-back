@@ -1,4 +1,11 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Relation
+} from 'typeorm'
 import { User } from '../user/user.entity'
 
 @Entity('register')
@@ -6,7 +13,11 @@ export class Register {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'enum', enum: ['income', 'withdraw', 'loan', 'savings', 'cash', 'expenses'], default: 'income' })
+  @Column({
+    type: 'enum',
+    enum: ['income', 'withdraw', 'loan', 'savings', 'cash', 'expenses'],
+    default: 'income'
+  })
   type: 'income' | 'withdraw' | 'loan' | 'savings' | 'cash' | 'expenses'
 
   @Column({ nullable: true, type: 'text' })

@@ -1,6 +1,7 @@
 import { format, toZonedTime } from 'date-fns-tz'
 import { Response, Request, NextFunction } from 'express'
-import { verify } from 'jsonwebtoken'
+import * as pkg from 'jsonwebtoken'
+const { verify } = pkg
 
 declare module 'express' {
   interface Request {

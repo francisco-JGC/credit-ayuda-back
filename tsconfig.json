@@ -15,15 +15,9 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true,
-    "plugins": [
-      {
-        "transform": "@zerollup/ts-transform-paths",
-        "exclude": ["*"]
-      }
-    ],
-    "baseUrl": "./src"
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }

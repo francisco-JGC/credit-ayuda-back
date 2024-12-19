@@ -1,7 +1,7 @@
-import { CreateRegister } from '../entities/register/types'
+import { CreateRegister } from '../entities/register/types/types'
 import { AppDataSource } from '../config/database.config'
 import { Register } from '../entities/register/register.entity'
-import { handleError, handleSuccess } from './types'
+import { handleError, handleSuccess } from './types/types'
 
 export async function getLastRegister() {
   try {

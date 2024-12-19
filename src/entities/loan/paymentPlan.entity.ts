@@ -3,7 +3,8 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToOne,
-  OneToMany, Relation
+  OneToMany,
+  Relation
 } from 'typeorm'
 import { Loan } from './loan.entity'
 import { PaymentSchedule } from './paymentSchedule.entity'

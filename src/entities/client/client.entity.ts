@@ -4,7 +4,8 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
-  OneToMany, Relation
+  OneToMany,
+  Relation
 } from 'typeorm'
 import { Route } from '../route/route.entity'
 import { Loan } from '../loan/loan.entity'

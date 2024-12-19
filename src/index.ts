@@ -6,6 +6,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { AppDataSource } from './config/database.config'
 import { createDefaultRoles } from './controllers/initializers/role.initializer'
+import { fileURLToPath } from 'url'
 
 const app = express()
 
@@ -21,6 +22,8 @@ const port = process.env.PORT || 3001
 
 async function main() {
   try {
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = path.dirname(__filename)
     const routeFiles = fs.readdirSync(path.join(__dirname, 'routes'))
 
     for (const file of routeFiles) {

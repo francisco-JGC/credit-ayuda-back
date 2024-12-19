@@ -6,8 +6,8 @@ import {
   IPagination,
   IPaginationResponse,
   type IHandleResponseController
-} from './types'
-import { IClientTable, ICreateClient } from '../entities/client/types'
+} from './types/types'
+import { IClientTable, ICreateClient } from '../entities/client/types/types'
 import { Client } from '../entities/client/client.entity'
 import { getRouteByName } from './route.controller'
 import { Route } from '../entities/route/route.entity'

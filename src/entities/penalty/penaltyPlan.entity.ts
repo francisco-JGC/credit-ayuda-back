@@ -4,7 +4,8 @@ import {
   JoinColumn,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn, Relation
+  PrimaryGeneratedColumn,
+  Relation
 } from 'typeorm'
 import { Loan } from '../loan/loan.entity'
 import { PenaltyPaymentSchedule } from './penaltySchedule.entity'

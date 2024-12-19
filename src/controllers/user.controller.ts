@@ -7,13 +7,13 @@ import {
   handleSuccess,
   IPagination,
   type IHandleResponseController
-} from './types'
+} from './types/types'
 import {
   ICreateUser,
   IResponseUser,
   IFindUserByUsername,
   IUpdateUser
-} from '../entities/user/types'
+} from '../entities/user/types/types'
 import { getRoleByName } from './role.controller'
 import { Role } from '../entities/role/role.entity'
 import { ILike } from 'typeorm'

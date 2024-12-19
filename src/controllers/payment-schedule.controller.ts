@@ -2,7 +2,7 @@ import { AppDataSource } from '../config/database.config'
 import { Loan } from '../entities/loan/loan.entity'
 import { PaymentSchedule } from '../entities/loan/paymentSchedule.entity'
 import { IUpdatePayment } from '../entities/loan/types/payment'
-import { handleError, handleSuccess } from './types'
+import { handleError, handleSuccess } from './types/types'
 
 export async function updatePaymentSchedule(
   newPaymentSchedule: IUpdatePayment
