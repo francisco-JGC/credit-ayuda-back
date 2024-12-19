@@ -3,12 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "tsc": "tsc",
     "dev": "ts-node-dev src/index.ts",
-    "build": "rimraf build && tsc",
-    "start": "pnpm build && node addJsExtensionToImports.js && node build/index.js"
+    "build": "rimraf build && tsc && tsc-alias",
+    "start": "node build/index.js"
   },
   "keywords": [],
   "author": {
@@ -46,8 +45,6 @@
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
-    "tsc-alias": "^1.8.10",
-    "ttypescript": "^1.5.15",
-    "typescript-transform-paths": "^3.5.2"
+    "tsc-alias": "^1.8.10"
   }
 }
