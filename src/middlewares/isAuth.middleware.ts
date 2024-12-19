@@ -1,5 +1,6 @@
+import 'dotenv/config'
 import { Response, Request, NextFunction } from 'express'
-import { verify } from 'jsonwebtoken'
+import { verify, JsonWebTokenError } from 'jsonwebtoken'
 
 export const isAuth = async (
   req: Request,
@@ -10,18 +11,37 @@ export const isAuth = async (
     const authorizationHeader = req.header('Authorization') || ''
 
     if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
-      return res.json({ success: false, message: 'Autorización requerida' })
+      return res
+        .status(401)
+        .json({ success: false, message: 'Autorización requerida' })
     }
 
     const token = authorizationHeader.replace('Bearer ', '')
 
     if (!token) {
-      return res.json({ success: false, message: 'No estas autorizado' })
+      return res
+        .status(401)
+        .json({ success: false, message: 'No estás autorizado' })
     }
 
-    if (verify(token, process.env.JWT_SECRET as string)) next()
-    else return res.json({ success: false })
+    const decoded = verify(token, process.env.JWT_SECRET!) as {
+      role: string
+    }
+
+    if (!decoded) {
+      return res
+        .status(401)
+        .json({ success: false, message: 'Porfavor vuelva a iniciar sesion' })
+    }
+
+    next()
   } catch (error) {
-    return res.json({ success: false })
+    if (error instanceof JsonWebTokenError) {
+      return res.status(403).json({ success: false, message: 'Token inválido' })
+    }
+
+    return res
+      .status(500)
+      .json({ success: false, message: 'Error interno del servidor' })
   }
 }

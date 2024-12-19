@@ -8,7 +8,7 @@ import type {
   ILogin,
   ILoginResponse
 } from '../entities/user/types'
-import type { IHandleResponseController } from './types'
+import { handleSuccess, type IHandleResponseController } from './types'
 
 export const login = async ({
   username,
@@ -49,18 +49,14 @@ export const login = async ({
         role: user?.roles[0]?.name || '',
         route_name: user?.route?.name || ''
       },
-      process.env.JWT_SECRET!,
-      { expiresIn: '1d' }
+      process.env.JWT_SECRET!
     )
 
-    return {
-      data: {
-        token,
-        username: user.username,
-        role: user?.roles[0]?.name || ''
-      },
-      success: true
-    }
+    return handleSuccess({
+      token,
+      username: user.username,
+      role: user?.roles[0]?.name || ''
+    })
   } catch (error: any) {
     return {
       message: error.message,
