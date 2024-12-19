@@ -5,8 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
-  PrimaryGeneratedColumn,
-  Relation
+  PrimaryGeneratedColumn
 } from 'typeorm'
 import { Client } from '../client/client.entity'
 import { PenaltyPlan } from '../penalty/penaltyPlan.entity'
@@ -48,7 +47,7 @@ export class Loan {
     eager: true,
     onDelete: 'CASCADE'
   })
-  client: Relation<Client>
+  client: Client
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date

@@ -4,8 +4,7 @@ import {
   JoinColumn,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
-  Relation
+  PrimaryGeneratedColumn
 } from 'typeorm'
 import { Loan } from '../loan/loan.entity'
 import { PenaltyPaymentSchedule } from './penaltySchedule.entity'
@@ -29,7 +28,7 @@ export class PenaltyPlan {
 
   @OneToOne(() => Loan, (loan) => loan.penalty_plan, { onDelete: 'CASCADE' })
   @JoinColumn()
-  loan: Relation<Loan>
+  loan: Loan
 
   @OneToMany(
     () => PenaltyPaymentSchedule,
