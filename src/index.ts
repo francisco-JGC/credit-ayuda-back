@@ -1,7 +1,7 @@
 import 'dotenv/config'
 
-import cors from 'cors'
 import express from 'express'
+import cors from 'cors'
 import * as fs from 'fs'
 import * as path from 'path'
 import { AppDataSource } from './config/database.config'

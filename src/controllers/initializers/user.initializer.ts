@@ -37,7 +37,7 @@ export const createDefaultUsers = async () => {
               userId: createdUser.data?.id || -1,
               role_name: user.rolename
             })
-}
+          }
         }
       }
     }

@@ -52,7 +52,10 @@ export async function getPenaltyPlans() {
   }
 }
 
-export async function addPenaltyPayment(id: number, penaltyPayment: PenaltyPaymentSchedule) {
+export async function addPenaltyPayment(
+  id: number,
+  penaltyPayment: PenaltyPaymentSchedule
+) {
   try {
     const penaltyPlan = await AppDataSource.getRepository(PenaltyPlan).findOne({
       where: { id },

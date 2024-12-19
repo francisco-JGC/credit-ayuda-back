@@ -190,7 +190,11 @@ export const getLoans = async ({
 
     const loansRepository = AppDataSource.getRepository(Loan)
     const [loans, loansCount] = await loansRepository.findAndCount({
-      relations: { client: { route: true }, payment_plan: { payment_schedules: true }, penalty_plan: true },
+      relations: {
+        client: { route: true },
+        payment_plan: { payment_schedules: true },
+        penalty_plan: true
+      },
       // skip: (page - 1) * limit,
       // take: limit,
       order: { created_at: 'DESC' },
@@ -288,7 +292,10 @@ export const getRequests = async ({
     }
     const loansRepository = AppDataSource.getRepository(Loan)
     const [loans, loansCount] = await loansRepository.findAndCount({
-      relations: { client: { route: true }, payment_plan: { payment_schedules: true } },
+      relations: {
+        client: { route: true },
+        payment_plan: { payment_schedules: true }
+      },
       // skip: (page - 1) * limit,
       // take: limit,
       order: { created_at: 'DESC' },
@@ -526,7 +533,11 @@ export const getLoansByClientId = async (
 
     const loans = await loanRepo.find({
       where: { client: { id: clientId } },
-      relations: { client: { route: true }, payment_plan: { payment_schedules: true }, penalty_plan: true }
+      relations: {
+        client: { route: true },
+        payment_plan: { payment_schedules: true },
+        penalty_plan: true
+      }
     })
 
     return handleSuccess(loans)

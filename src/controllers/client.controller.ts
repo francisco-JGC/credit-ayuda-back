@@ -171,7 +171,9 @@ export const getPaginationClient = async ({
       return handleNotFound('Numero de pagina o limite son valores invalidos')
     }
 
-    const [clients, totalClients] = await AppDataSource.getRepository(Client).findAndCount({
+    const [clients, totalClients] = await AppDataSource.getRepository(
+      Client
+    ).findAndCount({
       where: { dni: ILike(`%${filter || ''}%`), route: { name: route } },
       relations: [
         'route',
