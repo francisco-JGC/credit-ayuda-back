@@ -39,7 +39,7 @@ export class Loan {
   payment_plan: PaymentPlan
 
   @OneToOne(() => PenaltyPlan, (plan) => plan.loan, {
-    cascade: true
+    onDelete: 'CASCADE'
   })
   penalty_plan: PenaltyPlan
 

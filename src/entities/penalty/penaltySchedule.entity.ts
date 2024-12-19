@@ -20,7 +20,9 @@ export class PenaltyPaymentSchedule {
 
   @ManyToOne(
     () => PenaltyPlan,
-    (penaltyPlan) => penaltyPlan.penalty_payment_schedules
+    (penaltyPlan) => penaltyPlan.penalty_payment_schedules, {
+      onDelete: 'CASCADE'
+    }
   )
   penalty_plan: PenaltyPlan
 }

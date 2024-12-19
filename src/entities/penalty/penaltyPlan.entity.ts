@@ -26,14 +26,14 @@ export class PenaltyPlan {
   @Column({ type: 'varchar', length: 50 })
   status: 'paid' | 'pending' | 'unpaid'
 
-  @OneToOne(() => Loan, (loan) => loan.penalty_plan)
+  @OneToOne(() => Loan, (loan) => loan.penalty_plan, { onDelete: 'CASCADE' })
   @JoinColumn()
   loan: Loan
 
   @OneToMany(
     () => PenaltyPaymentSchedule,
     (penaltyPaymentSchedule) => penaltyPaymentSchedule.penalty_plan,
-    { cascade: true }
+    { onDelete: 'CASCADE' }
   )
   penalty_payment_schedules: PenaltyPaymentSchedule[]
 
