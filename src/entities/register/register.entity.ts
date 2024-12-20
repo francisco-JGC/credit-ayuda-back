@@ -3,7 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  Relation
 } from 'typeorm'
 import { User } from '../user/user.entity'
 
@@ -35,7 +36,7 @@ export class Register {
   withdraw?: number
 
   @ManyToOne(() => User, (user) => user.registers, { onDelete: 'SET NULL' })
-  user: User
+  user: Relation<User>
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date
