@@ -4,8 +4,7 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
-  OneToMany,
-  Relation
+  OneToMany
 } from 'typeorm'
 import { Route } from '../route/route.entity'
 import { Loan } from '../loan/loan.entity'
@@ -40,7 +39,7 @@ export class Client {
     nullable: true,
     onDelete: 'SET NULL'
   })
-  route?: Relation<Route>
+  route?: Route
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date

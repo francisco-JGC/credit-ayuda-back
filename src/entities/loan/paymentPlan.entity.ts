@@ -3,8 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToOne,
-  OneToMany,
-  Relation
+  OneToMany
 } from 'typeorm'
 import { Loan } from './loan.entity'
 import { PaymentSchedule } from './paymentSchedule.entity'
@@ -27,7 +26,7 @@ export class PaymentPlan {
   payment_amount: number
 
   @OneToOne(() => Loan, (loan) => loan.payment_plan)
-  loan: Relation<Loan>
+  loan: Loan
 
   @OneToMany(
     () => PaymentSchedule,
