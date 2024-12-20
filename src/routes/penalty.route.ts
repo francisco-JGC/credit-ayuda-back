@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { addPenaltyPayment, createPenaltyPlan, getPenaltyPlan, getPenaltyPlans } from '../controllers/penalty.controller'
-import { isAuth } from '../middlewares/isAuth.middleware'
+import { createPenaltyPaymentSchedule, createPenaltyPlan, getPenaltyPlan, getPenaltyPlans } from '../controllers/penalty.controller'
 import { authorizeRoles, isAllowedTime } from '../middlewares/authorizeRoles.middleware'
+import { isAuth } from '../middlewares/isAuth.middleware'
 
 const router = Router()
 router.use(isAllowedTime())
@@ -25,7 +25,7 @@ router.post('/', isAuth, authorizeRoles(['admin', 'collector']), async (req, res
 router.post('/add-payment/:id', isAuth, authorizeRoles(['admin', 'collector']), async (req, res) => {
   const id = parseInt(req.params.id)
   const penaltyPayment = req.body
-  const updatedPlan = await addPenaltyPayment(id, penaltyPayment)
+  const updatedPlan = await createPenaltyPaymentSchedule(id, penaltyPayment)
   return res.json(updatedPlan)
 })
 

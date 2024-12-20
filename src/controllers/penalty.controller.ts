@@ -52,13 +52,13 @@ export async function getPenaltyPlans() {
   }
 }
 
-export async function addPenaltyPayment(
-  id: number,
+export async function createPenaltyPaymentSchedule(
+  planId: number,
   penaltyPayment: PenaltyPaymentSchedule
 ) {
   try {
     const penaltyPlan = await AppDataSource.getRepository(PenaltyPlan).findOne({
-      where: { id },
+      where: { id: planId },
       relations: {
         penalty_payment_schedules: true
       }
@@ -68,18 +68,15 @@ export async function addPenaltyPayment(
       return handleError('Plan de penalización no encontrado')
     }
 
-    penaltyPlan.current_penalty_amount -= penaltyPayment.amount_paid
-    if (penaltyPlan.current_penalty_amount === 0) {
-      penaltyPlan.status = 'paid'
-    }
-    penaltyPlan.penalty_payment_schedules.push(penaltyPayment)
+    const savedPenaltyPayment = await AppDataSource.getRepository(PenaltyPaymentSchedule).save(penaltyPayment)
+    penaltyPlan.penalty_payment_schedules.push(savedPenaltyPayment)
     await AppDataSource.getRepository(PenaltyPlan).save(penaltyPlan)
 
-    return handleSuccess(penaltyPayment)
+    return handleSuccess(savedPenaltyPayment)
   } catch (error) {
     if (error instanceof Error) {
       return handleError(error.message)
     }
-    return handleError('Error al añadir el pago')
+    return handleError('Error al crear el pago de penalización')
   }
 }
