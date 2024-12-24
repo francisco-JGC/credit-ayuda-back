@@ -461,10 +461,10 @@ export const getFilteredDatesLoans = async ({
       )
     } else if (filter_type === 'monthly') {
       loansQuery = loansQuery
-        .andWhere('YEAR(payment_schedules.due_date) = :year', {
+        .andWhere('EXTRACT(YEAR FROM payment_schedules.due_date) = :year', {
           year: targetDate.getFullYear()
         })
-        .andWhere('MONTH(payment_schedules.due_date) = :month', {
+        .andWhere('EXTRACT(MONTH FROM payment_schedules.due_date) = :month', {
           month: targetDate.getMonth() + 1
         })
     } else {
