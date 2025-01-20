@@ -174,7 +174,7 @@ export const getPaginationClient = async ({
     const [clients, totalClients] = await AppDataSource.getRepository(
       Client
     ).findAndCount({
-      where: { dni: ILike(`%${filter || ''}%`), route: { name: route } },
+      where: { name: ILike(`%${filter || ''}%`), route: { name: route } },
       relations: [
         'route',
         'loans',
